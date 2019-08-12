@@ -1,2 +1,2 @@
 # mesibo-web
-https://nagendra1997.github.io/mesibo-web/index
+https://nagendra1997.github.io/mesibo-web/
