@@ -45,7 +45,7 @@
         </div>
 
         <div class="row sideBar">
-          <div class="row sideBar-body">
+          <div class="row sideBar-body" onclick="loadChatHistory('Nagendra')" id = "Nagendra">
             <div class="col-sm-3 col-xs-3 sideBar-avatar">
               <div class="avatar-icon">
                 <img src="https://bootdey.com/img/Content/avatar/avatar1.png">
@@ -54,7 +54,7 @@
             <div class="col-sm-9 col-xs-9 sideBar-main">
               <div class="row">
                 <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta" onclick="loadChatHistory('Nagendra')">Nagendra
+                  <span class="name-meta" >Nagendra
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
@@ -65,7 +65,7 @@
             </div>
           </div>
 
-          <div class="row sideBar-body">
+          <div class="row sideBar-body" onclick="loadChatHistory('Ankit')" id = "Ankit">
             <div class="col-sm-3 col-xs-3 sideBar-avatar">
               <div class="avatar-icon">
                 <img src="https://bootdey.com/img/Content/avatar/avatar2.png">
@@ -74,7 +74,7 @@
             <div class="col-sm-9 col-xs-9 sideBar-main">
               <div class="row">
                 <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta" onclick="loadChatHistory('Ankit')">Ankit 
+                  <span class="name-meta" >Ankit 
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
@@ -84,7 +84,7 @@
               </div>
             </div>
           </div>
-          <div class="row sideBar-body">
+          <div class="row sideBar-body" onclick="loadChatHistory('Priya')" id = "Priya">
             <div class="col-sm-3 col-xs-3 sideBar-avatar">
               <div class="avatar-icon">
                 <img src="https://bootdey.com/img/Content/avatar/avatar3.png">
@@ -93,7 +93,7 @@
             <div class="col-sm-9 col-xs-9 sideBar-main">
               <div class="row">
                 <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta" onclick="loadChatHistory('Priya')">Priya
+                  <span class="name-meta">Priya
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
@@ -534,8 +534,20 @@
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
      
-      var PhoneBook={'Nagendra':{'phone':'917019882153','photo':'https://bootdey.com/img/Content/avatar/avatar1.png'},'Ankit':{'phone':'917200721825','photo':'https://bootdey.com/img/Content/avatar/avatar2.png'}}; 
+      var PhoneBook={
+      'Nagendra':
+      {'phone':'917019882153',
+      'photo':'https://bootdey.com/img/Content/avatar/avatar1.png'},
+      'Ankit':
+      {'phone':'917200721825',
+      'photo':'https://bootdey.com/img/Content/avatar/avatar2.png'},
+      'Priya':
+      {'phone':'919448967903',
+      'photo':'https://bootdey.com/img/Content/avatar/avatar3.png'},
+    }; 
       //Put it in LocalSorage
+      var selected_user="";
+      var current_selected_user_name="";
 
       function TestNotify() {
       }
@@ -598,12 +610,17 @@
      }
 
     function loadChatHistory(selected_user_name){
+      if(current_selected_user_name)
+        $('#'+current_selected_user_name).css({"background-color":"#fff"});
+
       selected_user = PhoneBook[selected_user_name]['phone'];
-      // console.log("Loading history for "+ selected_user);
+      console.log("Loading history for "+ selected_user);
       $("#SelectedUserName").html(selected_user_name);
       $("#SelectedUserPicture").attr('src',PhoneBook[selected_user_name]['photo']);
+      $('#'+selected_user_name).css({"background-color":"#f2f2f2"});
       $('#conversation').empty();
       LocalStorage_LoadHistory(selected_user);
+      current_selected_user_name=selected_user_name;
       updateScroll();
       
     }

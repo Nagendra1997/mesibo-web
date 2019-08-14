@@ -187,9 +187,14 @@ body {
   cursor: pointer;
 }
 
-.sideBar-body:hover {
+.sideBar-body:hover{
   background-color: #f2f2f2;
 }
+
+.sideBar-body:active{
+  background-color: ##f2f2f2;
+}
+
 
 .sideBar-avatar {
   text-align: center;
