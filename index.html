@@ -561,7 +561,8 @@
     console.log("TestNotify.prototype.Mesibo_OnMessageStatus: from "  + m.peer + " status: " + 
       m.status);
 
-    m.peer='917019882153'; //Bug in API. Peer Is NULL
+    m.peer='919448967903'; //Bug in API. Peer Is NULL
+    //Manually set m.peer
     
     LocalStorage_UpdateItemSent(m);
 
@@ -614,10 +615,10 @@
         $('#'+current_selected_user_name).css({"background-color":"#fff"});
 
       selected_user = PhoneBook[selected_user_name]['phone'];
-      console.log("Loading history for "+ selected_user);
+      // console.log("Loading history for "+ selected_user);
       $("#SelectedUserName").html(selected_user_name);
       $("#SelectedUserPicture").attr('src',PhoneBook[selected_user_name]['photo']);
-      $('#'+selected_user_name).css({"background-color":"#f2f2f2"});
+      $('#'+selected_user_name).css({"background-color":"#e5e5e5"});
       $('#conversation').empty();
       LocalStorage_LoadHistory(selected_user);
       current_selected_user_name=selected_user_name;
