@@ -62,5 +62,4 @@ function LocalStorage_NewItemSent(id,peer,msg_payload){
   msg_hash[id]=msg_payload;
   localStorage.setItem(peer,JSON.stringify(msg_hash));
   retrievedMsgList  = localStorage.getItem(peer);
-  console.log(retrievedMsgList);
 }

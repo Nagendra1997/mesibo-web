@@ -54,7 +54,7 @@
             <div class="col-sm-9 col-xs-9 sideBar-main">
               <div class="row">
                 <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta">John Doe
+                  <span class="name-meta" onclick="loadChatHistory('Nagendra')">Nagendra
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
@@ -74,7 +74,7 @@
             <div class="col-sm-9 col-xs-9 sideBar-main">
               <div class="row">
                 <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta">John Doe
+                  <span class="name-meta" onclick="loadChatHistory('Ankit')">Ankit 
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
@@ -93,7 +93,7 @@
             <div class="col-sm-9 col-xs-9 sideBar-main">
               <div class="row">
                 <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta">John Doe
+                  <span class="name-meta" onclick="loadChatHistory('Priya')">Priya
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
@@ -460,11 +460,12 @@
       <div class="row heading">
         <div class="col-sm-2 col-md-1 col-xs-3 heading-avatar">
           <div class="heading-avatar-icon">
-            <img src="https://bootdey.com/img/Content/avatar/avatar6.png">
+            <img src="https://bootdey.com/img/Content/avatar/avatar6.png" 
+            id="SelectedUserPicture">
           </div>
         </div>
         <div class="col-sm-8 col-xs-7 heading-name">
-          <a class="heading-name-meta">John Doe
+          <a class="heading-name-meta" id="SelectedUserName">Mesibo
           </a>
           <span class="heading-online">Online</span>
         </div>
@@ -476,7 +477,7 @@
       <div class="row message" id="conversation">
         <div class="row message-previous">
           <div class="col-sm-12 previous">
-            <!-- <a onclick="previous(this)" id="ankitjain28" name="20">
+            <!-- <a onclick="previous(this)" id="" name="20">
             Show Previous Message!
             </a> -->
           </div>
@@ -486,7 +487,7 @@
           <div class="col-sm-12 message-main-receiver">
             <div class="receiver">
               <div class="message-text">
-               Hi, what are you doing?!
+               Hi, Welcome to Mesibo!
               </div>
               <span class="message-time pull-right">
                 00:39
@@ -499,7 +500,7 @@
           <div class="col-sm-12 message-main-sender">
             <div class="sender">
               <div class="message-text">
-                I am doing nothing man!
+                Click on user to select and send a message!
               </div>
               <span class="message-time pull-right">
                 00:42
@@ -532,10 +533,10 @@
 
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-      // localStorage.clear()
-      
-      var selected_user='917019882153';
-      LocalStorage_LoadHistory(selected_user);
+     
+      var PhoneBook={'Nagendra':{'phone':'917019882153','photo':'https://bootdey.com/img/Content/avatar/avatar1.png'},'Ankit':{'phone':'917200721825','photo':'https://bootdey.com/img/Content/avatar/avatar2.png'}}; 
+      //Put it in LocalSorage
+
       function TestNotify() {
       }
 
@@ -563,6 +564,7 @@
     if(m.flag==3){
       LocalStorage_UpdateItemRecieved(m,string);
       createRecievedBubble({'data':string,'ts':+ new Date});
+      updateScroll();
     }
 
   }
@@ -576,7 +578,8 @@
 
     function sendMessage() {
         var p = {};
-        p.peer = "917019882153";
+        // p.peer = "917019882153";
+           p.peer = selected_user; 
         var id = parseInt(Math.random()*10000);
         var msgdata="Mesibo test" ;
 
@@ -589,7 +592,21 @@
         createSentBubble(msg_payload);
         
         api.sendMessage(p,id,msgdata);
+        $('textarea').val('');
+        // document.querySelector("textarea").setSelectionRange(0,0);
+        updateScroll();
      }
+
+    function loadChatHistory(selected_user_name){
+      selected_user = PhoneBook[selected_user_name]['phone'];
+      // console.log("Loading history for "+ selected_user);
+      $("#SelectedUserName").html(selected_user_name);
+      $("#SelectedUserPicture").attr('src',PhoneBook[selected_user_name]['photo']);
+      $('#conversation').empty();
+      LocalStorage_LoadHistory(selected_user);
+      updateScroll();
+      
+    }
 
      document.onkeydown = function (e) {
       e = e || window.event;
@@ -599,7 +616,7 @@
               break;
     }
 
-}
+  }
 	$(function(){
     $(".heading-compose").click(function() {
       $(".side-two").css({

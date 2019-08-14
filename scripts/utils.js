@@ -165,5 +165,10 @@ function updateStatusTick(statusTick,status){
 
 }
 
+function updateScroll(){
+  var objDiv = document.getElementById("conversation");
+  objDiv.scrollTop = objDiv.scrollHeight;
+}
+
 
 
