@@ -1,13 +1,13 @@
 //localstorage.js
 
-
-function  LocalStorage_LoadHistory(selected_user){
+function LocalStorage_LoadHistory(selected_user){
   
       msg_history=JSON.parse(localStorage.getItem(selected_user));
 
       if(msg_history){
+
       var msg_hist_data=Object.keys(msg_history).map(function(key){return msg_history[key];});
-      msg_hist_data.sort(function(a,b){return a.ts - b.ts;});
+      // msg_hist_data.sort(function(a,b){return a.ts - b.ts;});
 
       var previous_date=0;
 
@@ -21,6 +21,7 @@ function  LocalStorage_LoadHistory(selected_user){
         else
           createRecievedBubble(msg_data);
         }
+        updateLastMsg(selected_user);
 
     }
 }
@@ -28,38 +29,76 @@ function  LocalStorage_LoadHistory(selected_user){
 //m is the message object
 
 function LocalStorage_UpdateItemSent(m){
-  var retrievedMsgList = localStorage.getItem(m.peer); 
+  // console.log(m);
+  console.log("===>LocalStorage_UpdateItemSent called");
+  var retrievedMsgArray = localStorage.getItem(m.peer); 
   //MsgList Entry Will always exist if msg sent.No need to check
-  var jsonMsgList=JSON.parse(retrievedMsgList );
-      
-  jsonMsgList[m.id]['params']=m;
-  jsonMsgList[m.id]['status']=m.status;
+  var jsonMsgArray=JSON.parse(retrievedMsgArray);
+  // console.log(jsonMsgArray);
 
-  localStorage.setItem(m.peer,JSON.stringify(jsonMsgList));
+  for (var i=jsonMsgArray.length-1;i>=0;i--){
+    if(jsonMsgArray[i]['id']== m.id){
+      jsonMsgArray[i]['params']=m;
+      jsonMsgArray[i]['status']=m.status;
+      }
+    }
+        
+  localStorage.setItem(m.peer,JSON.stringify(jsonMsgArray));
 
 }
 
 function LocalStorage_UpdateItemRecieved(m,string){
-  var retrievedMsgList  = localStorage.getItem(m.peer);
-  var jsonMsgList = {};
+  console.log("===>LocalStorage_UpdateItemRecieved called");
+  var retrievedMsgArray  = localStorage.getItem(m.peer);
+  var jsonMsgArray = [];
 
-    if(retrievedMsgList)
-      var jsonMsgList=JSON.parse(retrievedMsgList );
+    if(retrievedMsgArray)
+      jsonMsgArray=JSON.parse(retrievedMsgArray);
    
-    jsonMsgList[m.id]={'id':m.id,'peer':m.peer,'params':m,'data':string,'groupid':0,'ts':+ new Date,'flag':m.flag};
-
-    localStorage.setItem(m.peer,JSON.stringify(jsonMsgList));
+    jsonMsgArray.push({'id':m.id,'peer':m.peer,'params':m,'data':string,'groupid':0,'ts':+ new Date,'flag':m.flag});
+    localStorage.setItem(m.peer,JSON.stringify(jsonMsgArray));
 }
 
 function LocalStorage_NewItemSent(id,peer,msg_payload){
-  var retrievedMsgList = localStorage.getItem(peer);
+  console.log("===>LocalStorage_NewItemSent called");
+  var retrievedMsgArray = localStorage.getItem(peer);
       
-  if(retrievedMsgList)
-    var msg_hash=JSON.parse(retrievedMsgList);
+  if(retrievedMsgArray)
+    retrievedMsgArray=JSON.parse(retrievedMsgArray);
   else
-    msg_hash={};
+    retrievedMsgArray=[];
 
-  msg_hash[id]=msg_payload;
-  localStorage.setItem(peer,JSON.stringify(msg_hash));
-  retrievedMsgList  = localStorage.getItem(peer);
+  retrievedMsgArray.push(msg_payload);
+  localStorage.setItem(peer,JSON.stringify(retrievedMsgArray));
+
+  // console.log(JSON.parse(localStorage.getItem(peer)));
 }
+
+
+function LocalSorage_MsgPeerHash(msgId,peer){
+  var retrievedMsgHash = localStorage.getItem("Mesibo_MsgUsr_Hash");
+  if(retrievedMsgHash)
+    retrievedMsgHash = JSON.parse(retrievedMsgHash);
+  else
+    retrievedMsgHash = {};
+
+    retrievedMsgHash[msgId]=peer;
+    localStorage.setItem("Mesibo_MsgUsr_Hash",JSON.stringify(retrievedMsgHash));
+
+  
+}
+
+function LocalStorage_GetPeerFromId(msgId){
+
+  var retrievedMsgHash = localStorage.getItem("Mesibo_MsgUsr_Hash");
+  if(retrievedMsgHash)
+    retrievedMsgHash = JSON.parse(retrievedMsgHash);
+  else {
+    console.log("Error: Invalid message ID");
+    return -1;
+  }
+
+  return retrievedMsgHash[msgId];
+
+}
+

@@ -44,21 +44,25 @@
           </div>
         </div>
 
-        <div class="row sideBar">
+        <div class="row sideBar" id="UserList">
           <div class="row sideBar-body" onclick="loadChatHistory('Nagendra')" id = "Nagendra">
             <div class="col-sm-3 col-xs-3 sideBar-avatar">
               <div class="avatar-icon">
-                <img src="https://bootdey.com/img/Content/avatar/avatar1.png">
+                <img src="images/profile/default-profile-icon-16.jpg">
               </div>
             </div>
             <div class="col-sm-9 col-xs-9 sideBar-main">
               <div class="row">
                 <div class="col-sm-8 col-xs-8 sideBar-name">
                   <span class="name-meta" >Nagendra
+                  <span class="message-time pull-right">
+                    <img src="" class='status_msg_img' id=Nagendra_LastStatus>
+                  </span>
+                  <p id='Nagendra_LastMsg'></p>      
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right" id='Nagendra_LastDate'>
                 </span>
                 </div>
               </div>
@@ -68,17 +72,21 @@
           <div class="row sideBar-body" onclick="loadChatHistory('Ankit')" id = "Ankit">
             <div class="col-sm-3 col-xs-3 sideBar-avatar">
               <div class="avatar-icon">
-                <img src="https://bootdey.com/img/Content/avatar/avatar2.png">
+                <img src="images/profile/default-profile-icon-16.jpg">
               </div>
             </div>
             <div class="col-sm-9 col-xs-9 sideBar-main">
               <div class="row">
                 <div class="col-sm-8 col-xs-8 sideBar-name">
                   <span class="name-meta" >Ankit 
+                    <span class="message-time pull-right">
+                    <img src="" class='status_msg_img' id=Ankit_LastStatus>
+                    </span>
+                  <p id='Ankit_LastMsg'> </p>
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right" id='Ankit_LastDate'>
                 </span>
                 </div>
               </div>
@@ -87,150 +95,21 @@
           <div class="row sideBar-body" onclick="loadChatHistory('Priya')" id = "Priya">
             <div class="col-sm-3 col-xs-3 sideBar-avatar">
               <div class="avatar-icon">
-                <img src="https://bootdey.com/img/Content/avatar/avatar3.png">
+                <img src="images/profile/default-profile-icon-16.jpg">
               </div>
             </div>
             <div class="col-sm-9 col-xs-9 sideBar-main">
               <div class="row">
                 <div class="col-sm-8 col-xs-8 sideBar-name">
                   <span class="name-meta">Priya
+                    <span class="message-status-last pull-right">
+                    <img src="" class='status_msg_img' id=Priya_LastStatus>
+                    </span>
+                  <p id='Priya_LastMsg'></p>
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
-                </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row sideBar-body">
-            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-              <div class="avatar-icon">
-                <img src="https://bootdey.com/img/Content/avatar/avatar4.png">
-              </div>
-            </div>
-            <div class="col-sm-9 col-xs-9 sideBar-main">
-              <div class="row">
-                <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta">John Doe
-                </span>
-                </div>
-                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
-                </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row sideBar-body">
-            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-              <div class="avatar-icon">
-                <img src="https://bootdey.com/img/Content/avatar/avatar5.png">
-              </div>
-            </div>
-            <div class="col-sm-9 col-xs-9 sideBar-main">
-              <div class="row">
-                <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta">John Doe
-                </span>
-                </div>
-                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
-                </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row sideBar-body">
-            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-              <div class="avatar-icon">
-                <img src="https://bootdey.com/img/Content/avatar/avatar6.png">
-              </div>
-            </div>
-            <div class="col-sm-9 col-xs-9 sideBar-main">
-              <div class="row">
-                <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta">John Doe
-                </span>
-                </div>
-                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
-                </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row sideBar-body">
-            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-              <div class="avatar-icon">
-                <img src="https://bootdey.com/img/Content/avatar/avatar1.png">
-              </div>
-            </div>
-            <div class="col-sm-9 col-xs-9 sideBar-main">
-              <div class="row">
-                <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta">John Doe
-                </span>
-                </div>
-                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
-                </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row sideBar-body">
-            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-              <div class="avatar-icon">
-                <img src="https://bootdey.com/img/Content/avatar/avatar2.png">
-              </div>
-            </div>
-            <div class="col-sm-9 col-xs-9 sideBar-main">
-              <div class="row">
-                <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta">John Doe
-                </span>
-                </div>
-                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
-                </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row sideBar-body">
-            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-              <div class="avatar-icon">
-                <img src="https://bootdey.com/img/Content/avatar/avatar3.png">
-              </div>
-            </div>
-            <div class="col-sm-9 col-xs-9 sideBar-main">
-              <div class="row">
-                <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta">John Doe
-                </span>
-                </div>
-                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
-                </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row sideBar-body">
-            <div class="col-sm-3 col-xs-3 sideBar-avatar">
-              <div class="avatar-icon">
-                <img src="https://bootdey.com/img/Content/avatar/avatar4.png">
-              </div>
-            </div>
-            <div class="col-sm-9 col-xs-9 sideBar-main">
-              <div class="row">
-                <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta">John Doe
-                </span>
-                </div>
-                <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right" id='Priya_LastDate' >
                 </span>
                 </div>
               </div>
@@ -274,7 +153,7 @@
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right">
                 </span>
                 </div>
               </div>
@@ -294,7 +173,7 @@
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right">
                 </span>
                 </div>
               </div>
@@ -313,7 +192,7 @@
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right">
                 </span>
                 </div>
               </div>
@@ -332,7 +211,7 @@
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right">
                 </span>
                 </div>
               </div>
@@ -351,7 +230,7 @@
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right">
                 </span>
                 </div>
               </div>
@@ -370,7 +249,7 @@
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right">
                 </span>
                 </div>
               </div>
@@ -389,7 +268,7 @@
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right">
                 </span>
                 </div>
               </div>
@@ -408,7 +287,7 @@
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right">
                 </span>
                 </div>
               </div>
@@ -427,7 +306,7 @@
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right">
                 </span>
                 </div>
               </div>
@@ -446,7 +325,7 @@
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                  <span class="time-meta pull-right">18:18
+                  <span class="time-meta pull-right">
                 </span>
                 </div>
               </div>
@@ -460,7 +339,7 @@
       <div class="row heading">
         <div class="col-sm-2 col-md-1 col-xs-3 heading-avatar">
           <div class="heading-avatar-icon">
-            <img src="https://bootdey.com/img/Content/avatar/avatar6.png" 
+            <img src="images/profile/default-profile-icon-16.jpg" 
             id="SelectedUserPicture">
           </div>
         </div>
@@ -522,7 +401,7 @@
           <i class="fa fa-microphone fa-2x" aria-hidden="true"></i>
         </div>
         <div class="col-sm-1 col-xs-1 reply-send">
-          <i class="fa fa-send fa-2x" aria-hidden="true" onclick="sendMessage()"></i>
+          <i class="fa fa-send fa-2x" aria-hidden="true" onclick="sendMessage()" id='alphBnt'></i>
         </div>
       </div>
     </div>
@@ -533,19 +412,60 @@
 
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
+
+      var $divs = $("#UserList .row.sideBar-body");
      
-      var PhoneBook={
-      'Nagendra':
-      {'phone':'917019882153',
-      'photo':'https://bootdey.com/img/Content/avatar/avatar1.png'},
-      'Ankit':
-      {'phone':'917200721825',
-      'photo':'https://bootdey.com/img/Content/avatar/avatar2.png'},
-      'Priya':
-      {'phone':'919448967903',
-      'photo':'https://bootdey.com/img/Content/avatar/avatar3.png'},
-    }; 
-      //Put it in LocalSorage
+    //   var PhoneBook={
+    //   'Nagendra':
+    //   {'phone':'919999999999',
+    //   'photo':'https://bootdey.com/img/Content/avatar/avatar1.png'},
+    //   'Ankit':
+    //   {'phone':'919999999999',
+    //   'photo':'https://bootdey.com/img/Content/avatar/avatar2.png'},
+    //   'Priya':
+    //   {'phone':'919999999999',
+    //   'photo':'https://bootdey.com/img/Content/avatar/avatar3.png'},
+    // }; 
+
+    //   localStorage.setItem("Local_PhoneBook",JSON.stringify(PhoneBook));
+
+    //Replace with get list of all users
+      //Put list of active contacts in LocalSorage
+
+      Array.prototype.contains = function(v) {
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] === v) return true;
+  }
+  return false;
+};
+
+Array.prototype.unique = function() {
+  var arr = [];
+  for (var i = 0; i < this.length; i++) {
+    if (!arr.contains(this[i])) {
+      arr.push(this[i]);
+    }
+  }
+  return arr;
+}
+
+
+      var active_user_list=localStorage.getItem("Mesibo_MsgUsr_Hash");
+      if(active_user_list){
+        console.log( JSON.parse(active_user_list));
+        active_user_list = Object.values(JSON.parse(active_user_list));
+        active_user_list.unique()
+      }
+      else
+        active_user_list=['Nagendra','Ankit','Priya'];
+
+      for(var i =0; i<active_user_list.length;i++) {
+        // console.log(active_user_list[i]);
+        updateLastMsg(active_user_list[i]);
+      }
+
+      updateUserListOrder();
+
       var selected_user="";
       var current_selected_user_name="";
 
@@ -558,30 +478,49 @@
   }
 
   TestNotify.prototype.Mesibo_OnMessageStatus = function(m) {
+
+	  // console.log("TestNotify.prototype.Mesibo_OnMessageStatus: from "  + m.peer + " status: " + 
+   //    m.status);
+
+    
+    // if(!m.peer){
+    //   console.log("Peer Null");
+    //   m.peer = LocalStorage_GetPeerFromId(m.id);
+    // }
+    // console.log(m.peer);
+
+    // m.peer='Nagendra';
+    m.peer = LocalStorage_GetPeerFromId(m.id);
     console.log("TestNotify.prototype.Mesibo_OnMessageStatus: from "  + m.peer + " status: " + 
       m.status);
 
-    m.peer='917019882153'; //Bug in API. Peer Is NULL
-    //Manually set m.peer
-    
-    LocalStorage_UpdateItemSent(m);
+    console.log(m);
 
+
+    LocalStorage_UpdateItemSent(m);
     var statustick=document.getElementById(m.id);
     updateStatusTick(statustick,m.status);
+    updateLastMsg(m.peer);
+    updateUserListOrder();
   }
 
   TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
+    console.log(m);
     console.log("TestNotify.prototype.Mesibo_OnMessage: from "  + m.peer);
     var string = new TextDecoder("utf-8").decode(data);
+    console.log(string)
   
     if(m.flag==3){
       LocalStorage_UpdateItemRecieved(m,string);
-      createRecievedBubble({'data':string,'ts':+ new Date});
+      if(selected_user==m.peer)
+        createRecievedBubble({'data':string,'ts':+ new Date});
       updateScroll();
+      updateLastMsg(m.peer);
+      updateUserListOrder();
     }
 
   }
-     var accessToken = "4080ba6528abe3bdbef60cd497f9193199dadb6b635616e2216a80" 
+     var accessToken = "aea59d3713701704bed9fd5952d9419ba8c4209a335e664ef2e" 
         
      var api = new Mesibo();
      api.setAppName("dialogflowmesibo");
@@ -591,33 +530,49 @@
 
     function sendMessage() {
         var p = {};
-        // p.peer = "917019882153";
-           p.peer = selected_user; 
+           p.peer = selected_user;
+
+        console.log("SENDING MSG >>>>>>>>>>>>>>>",selected_user);
+        if(!selected_user)return;
+
         var id = parseInt(Math.random()*10000);
-        var msgdata="Mesibo test" ;
+        var msgdata="I have recieved hi!" ;
 
         msgdata= document.getElementById("comment").value;
       
-        msg_payload={'id':id,'peer':p.peer,'params':p,'data':msgdata,'groupid':0,
-        'ts': + new Date,'flag':0,'status':MESIBO_MSGSTATUS_OUTBOX};
+      	
+	    if(msgdata){ 
+
+        	msg_payload={'id':id,'peer':p.peer,'params':p,'data':msgdata,'groupid':0,
+        		'ts': + new Date,'flag':0,'status':MESIBO_MSGSTATUS_OUTBOX};
       
-        LocalStorage_NewItemSent(id,p.peer,msg_payload);
-        createSentBubble(msg_payload);
-        
-        api.sendMessage(p,id,msgdata);
-        $('textarea').val('');
-        // document.querySelector("textarea").setSelectionRange(0,0);
-        updateScroll();
+        	LocalStorage_NewItemSent(id,p.peer,msg_payload);
+          LocalSorage_MsgPeerHash(id,p.peer);
+
+          var retrievedMsgHash = localStorage.getItem("Mesibo_MsgUsr_Hash");
+          if(retrievedMsgHash)
+          retrievedMsgHash = JSON.parse(retrievedMsgHash);
+
+
+        	createSentBubble(msg_payload);
+          console.log(p,id,msgdata);
+        	api.sendMessage(p,id,msgdata);
+        	$('textarea').val('');
+          updateLastMsg(p.peer);
+        	updateScroll();
+          updateUserListOrder();
+	    }
      }
 
     function loadChatHistory(selected_user_name){
+      console.log(">>>>>>>>>>>>>>",selected_user_name);
       if(current_selected_user_name)
         $('#'+current_selected_user_name).css({"background-color":"#fff"});
 
-      selected_user = PhoneBook[selected_user_name]['phone'];
-      // console.log("Loading history for "+ selected_user);
+
+      selected_user = selected_user_name;
       $("#SelectedUserName").html(selected_user_name);
-      $("#SelectedUserPicture").attr('src',PhoneBook[selected_user_name]['photo']);
+      $("#SelectedUserPicture").attr('src','images/profile/default-profile-icon-16.jpg');
       $('#'+selected_user_name).css({"background-color":"#e5e5e5"});
       $('#conversation').empty();
       LocalStorage_LoadHistory(selected_user);
@@ -648,6 +603,8 @@
       });
     });
 })
+
+  
 </script>
 </body>
 </html>

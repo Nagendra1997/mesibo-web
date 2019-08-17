@@ -388,6 +388,16 @@ body {
   display:inline-block
 
 }
+.message-status-last {
+  float: left;
+  margin: 0 !important;
+  margin-right: 50px !important;
+  font-size: 12px;
+  text-align: right;
+  color: #9a9a9a;
+  display:inline-block
+
+}
 
 .receiver {
   width: auto !important;

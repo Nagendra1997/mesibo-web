@@ -142,6 +142,7 @@ function createDateHeader(msg_data,previous_date){
 }
 
 function updateStatusTick(statusTick,status){
+    if(statusTick){
 
     switch(status){
 
@@ -162,6 +163,7 @@ function updateStatusTick(statusTick,status){
       statusTick.setAttribute("src","images/ic_av_timer.png");
 
     }
+  }
 
 }
 
@@ -170,5 +172,58 @@ function updateScroll(){
   objDiv.scrollTop = objDiv.scrollHeight;
 }
 
+function updateLastMsg(peer){
+  var lastMsgId = String(peer)+"_LastMsg";
+  var lastMsgDateId = String(peer)+"_LastDate";
+  var lastMsgStatusId = String(peer)+"_LastStatus";
 
+  var lastMsgArea=document.getElementById(lastMsgId);
+  $(lastMsgId).text('');
+  var lastMsgDateArea=document.getElementById(lastMsgDateId);
+  $(lastMsgDateId).text('');
+  var lastMsgStatusArea=document.getElementById(lastMsgStatusId);
+  // console.log(lastMsgStatusArea);
+
+  var retrievedMsgArray = localStorage.getItem(peer);
+  retrievedMsgArray=JSON.parse(retrievedMsgArray);
+
+  if(retrievedMsgArray){
+
+  var lastMsgContent=retrievedMsgArray[retrievedMsgArray.length -1];
+  if(lastMsgContent['data'].length > 22)
+      lastMsgArea.innerHTML=lastMsgContent['data'].slice(0,20) + " ...";
+  else
+      lastMsgArea.innerHTML=lastMsgContent['data'];
+  
+  lastMsgDateArea.innerHTML=timeNow2(lastMsgContent['ts']);
+  // console.log(lastMsgContent);
+
+  if(lastMsgContent['flag']==3)
+    lastMsgStatusArea.setAttribute("src","");
+  else {
+    // console.log("Updating",lastMsgStatusArea,lastMsgContent['status']);
+    updateStatusTick(lastMsgStatusArea,lastMsgContent['status']);
+    }
+  }
+
+}
+
+function getLastTs(peer){
+  var retrievedMsgArray = localStorage.getItem(peer);
+  retrievedMsgArray=JSON.parse(retrievedMsgArray);
+  if(retrievedMsgArray){
+  var lastMsgContent=retrievedMsgArray[retrievedMsgArray.length -1];
+  return lastMsgContent['ts'];
+  }
+  else
+    return 0 ;
+}
+
+function updateUserListOrder(){
+  var $divs = $("#UserList .row.sideBar-body");
+  var TimeOrderedDivs = $divs.sort(function(a,b){
+        return getLastTs(b.id) - getLastTs(a.id);
+    });
+    $("#UserList").html(TimeOrderedDivs);
+}
 
