@@ -630,4 +630,14 @@ body {
 
 }
 
+.last_msg_status{
+  width:20px;
+  height:20px;
+}
 
+.last_msg_text{
+margin:0px;
+height:32px;
+max-width:100%;
+
+}

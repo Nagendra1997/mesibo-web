@@ -190,8 +190,8 @@ function updateLastMsg(peer){
   if(retrievedMsgArray){
 
   var lastMsgContent=retrievedMsgArray[retrievedMsgArray.length -1];
-  if(lastMsgContent['data'].length > 22)
-      lastMsgArea.innerHTML=lastMsgContent['data'].slice(0,20) + " ...";
+  if(lastMsgContent['data'].length > 25)
+      lastMsgArea.innerHTML=lastMsgContent['data'].slice(0,25) + " ...";
   else
       lastMsgArea.innerHTML=lastMsgContent['data'];
   
