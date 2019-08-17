@@ -414,40 +414,8 @@
 <script type="text/javascript">
 
       var $divs = $("#UserList .row.sideBar-body");
-     
-    //   var PhoneBook={
-    //   'Nagendra':
-    //   {'phone':'919999999999',
-    //   'photo':'https://bootdey.com/img/Content/avatar/avatar1.png'},
-    //   'Ankit':
-    //   {'phone':'919999999999',
-    //   'photo':'https://bootdey.com/img/Content/avatar/avatar2.png'},
-    //   'Priya':
-    //   {'phone':'919999999999',
-    //   'photo':'https://bootdey.com/img/Content/avatar/avatar3.png'},
-    // }; 
 
-    //   localStorage.setItem("Local_PhoneBook",JSON.stringify(PhoneBook));
-
-    //Replace with get list of all users
-      //Put list of active contacts in LocalSorage
-
-      Array.prototype.contains = function(v) {
-  for (var i = 0; i < this.length; i++) {
-    if (this[i] === v) return true;
-  }
-  return false;
-};
-
-Array.prototype.unique = function() {
-  var arr = [];
-  for (var i = 0; i < this.length; i++) {
-    if (!arr.contains(this[i])) {
-      arr.push(this[i]);
-    }
-  }
-  return arr;
-}
+      
 
 
       var active_user_list=localStorage.getItem("Mesibo_MsgUsr_Hash");
@@ -479,23 +447,9 @@ Array.prototype.unique = function() {
 
   TestNotify.prototype.Mesibo_OnMessageStatus = function(m) {
 
-    // console.log("TestNotify.prototype.Mesibo_OnMessageStatus: from "  + m.peer + " status: " + 
-   //    m.status);
-
-    
-    // if(!m.peer){
-    //   console.log("Peer Null");
-    //   m.peer = LocalStorage_GetPeerFromId(m.id);
-    // }
-    // console.log(m.peer);
-
-    // m.peer='Nagendra';
     m.peer = LocalStorage_GetPeerFromId(m.id);
     console.log("TestNotify.prototype.Mesibo_OnMessageStatus: from "  + m.peer + " status: " + 
       m.status);
-
-    console.log(m);
-
 
     LocalStorage_UpdateItemSent(m);
     var statustick=document.getElementById(m.id);
@@ -551,8 +505,9 @@ Array.prototype.unique = function() {
 
           var retrievedMsgHash = localStorage.getItem("Mesibo_MsgUsr_Hash");
           if(retrievedMsgHash)
-          retrievedMsgHash = JSON.parse(retrievedMsgHash);
+              retrievedMsgHash = JSON.parse(retrievedMsgHash);
 
+          createDateHeader(msg_payload,getLastTs());            
 
           createSentBubble(msg_payload);
           console.log(p,id,msgdata);
