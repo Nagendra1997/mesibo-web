@@ -199,9 +199,9 @@ function updateLastMsg(peer){
   // console.log(lastMsgContent);
 
   if(lastMsgContent['flag']==3)
-    lastMsgStatusArea.setAttribute("src","");
+    lastMsgStatusArea.style.display = "none";
   else {
-    // console.log("Updating",lastMsgStatusArea,lastMsgContent['status']);
+    lastMsgStatusArea.style.display = "true";
     updateStatusTick(lastMsgStatusArea,lastMsgContent['status']);
     }
   }

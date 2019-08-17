@@ -54,9 +54,11 @@
             <div class="col-sm-9 col-xs-9 sideBar-main">
               <div class="row">
                 <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta" >Nagendra
+                  <span class="name-meta" ><strong>Nagendra</strong>
+                  <div> 
                   <img src="" alt="Nagendra_LastStatus" class="last_msg_status" id=Nagendra_LastStatus>
-                  <p class="last_msg_text"id='Nagendra_LastMsg'></p>     
+                  <div class="last_msg_text"id='Nagendra_LastMsg'></div>    
+                  </div> 
                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
@@ -76,10 +78,12 @@
             <div class="col-sm-9 col-xs-9 sideBar-main">
               <div class="row">
                 <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span class="name-meta" >Ankit 
+                  <span class="name-meta" ><strong>Ankit</strong>
+                  <div> 
                     <img src="" class='last_msg_status' id=Ankit_LastStatus>
-                    <p class='last_msg_text' id='Ankit_LastMsg'> </p>
-                </span>
+                    <div class='last_msg_text' id='Ankit_LastMsg'> </div>
+                  </div>
+                 </span>
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
                   <span class="time-meta pull-right" id='Ankit_LastDate'>
@@ -97,10 +101,12 @@
             <div class="col-sm-9 col-xs-9 sideBar-main">
               <div class="row">
                 <div class="col-sm-8 col-xs-8 sideBar-name">
-                  <span  class="name-meta">Priya
+                  <span  class="name-meta"><strong>Priya</strong>
+                    <div>
                     <img src="" class="last_msg_status" id=Priya_LastStatus>
-                  <p class='last_msg_text' id='Priya_LastMsg'></p>
+                      <div class="last_msg_text" id='Priya_LastMsg'></div>
                   </span>
+                </div>  
                 </div>
                 <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
                   <span class="time-meta pull-right" id='Priya_LastDate' >
@@ -473,7 +479,7 @@ Array.prototype.unique = function() {
 
   TestNotify.prototype.Mesibo_OnMessageStatus = function(m) {
 
-	  // console.log("TestNotify.prototype.Mesibo_OnMessageStatus: from "  + m.peer + " status: " + 
+    // console.log("TestNotify.prototype.Mesibo_OnMessageStatus: from "  + m.peer + " status: " + 
    //    m.status);
 
     
@@ -534,13 +540,13 @@ Array.prototype.unique = function() {
 
         msgdata= document.getElementById("comment").value;
       
-      	
-	    if(msgdata){ 
+        
+      if(msgdata){ 
 
-        	msg_payload={'id':id,'peer':p.peer,'params':p,'data':msgdata,'groupid':0,
-        		'ts': + new Date,'flag':0,'status':MESIBO_MSGSTATUS_OUTBOX};
+          msg_payload={'id':id,'peer':p.peer,'params':p,'data':msgdata,'groupid':0,
+            'ts': + new Date,'flag':0,'status':MESIBO_MSGSTATUS_OUTBOX};
       
-        	LocalStorage_NewItemSent(id,p.peer,msg_payload);
+          LocalStorage_NewItemSent(id,p.peer,msg_payload);
           LocalSorage_MsgPeerHash(id,p.peer);
 
           var retrievedMsgHash = localStorage.getItem("Mesibo_MsgUsr_Hash");
@@ -548,14 +554,14 @@ Array.prototype.unique = function() {
           retrievedMsgHash = JSON.parse(retrievedMsgHash);
 
 
-        	createSentBubble(msg_payload);
+          createSentBubble(msg_payload);
           console.log(p,id,msgdata);
-        	api.sendMessage(p,id,msgdata);
-        	$('textarea').val('');
+          api.sendMessage(p,id,msgdata);
+          $('textarea').val('');
           updateLastMsg(p.peer);
-        	updateScroll();
+          updateScroll();
           updateUserListOrder();
-	    }
+      }
      }
 
     function loadChatHistory(selected_user_name){
@@ -584,7 +590,7 @@ Array.prototype.unique = function() {
     }
 
   }
-	$(function(){
+  $(function(){
     $(".heading-compose").click(function() {
       $(".side-two").css({
         "left": "0"

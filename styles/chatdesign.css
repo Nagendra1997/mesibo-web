@@ -636,8 +636,6 @@ body {
 }
 
 .last_msg_text{
-margin:0px;
-height:32px;
-max-width:100%;
+  display: inline;
 
 }
