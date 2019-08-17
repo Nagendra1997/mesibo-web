@@ -56,7 +56,7 @@
                 <div class="col-sm-8 col-xs-8 sideBar-name">
                   <span class="name-meta" ><strong>Nagendra</strong>
                   <div> 
-                  <img src="" alt="Nagendra_LastStatus" class="last_msg_status" id=Nagendra_LastStatus>
+                  <img src=""  class="last_msg_status" id=Nagendra_LastStatus>
                   <div class="last_msg_text"id='Nagendra_LastMsg'></div>    
                   </div> 
                 </span>
@@ -429,6 +429,9 @@
 
       for(var i =0; i<active_user_list.length;i++) {
         // console.log(active_user_list[i]);
+        var lastMsgStatusId = String(active_user_list[i])+"_LastStatus";
+        lastMsgStatusArea=document.getElementById(lastMsgStatusId);
+        lastMsgStatusArea.style.display = "none";
         updateLastMsg(active_user_list[i]);
       }
 
