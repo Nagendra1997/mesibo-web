@@ -190,6 +190,10 @@ function updateScroll(){
   objDiv.scrollTop = objDiv.scrollHeight;
 }
 
+function updateProfilePic(user_name,file_path){
+  document.getElementById(user_name).setAttribute("src",file_path);
+}
+
 function updateLastMsg(peer){
   var lastMsgId = String(peer)+"_LastMsg";
   var lastMsgDateId = String(peer)+"_LastDate";
@@ -227,9 +231,7 @@ function updateLastMsg(peer){
 }
 
 function getLastTs(peer){
-  console.log(peer);
   var retrievedMsgArray = localStorage.getItem(peer);
-  // console.log()
 
   retrievedMsgArray=JSON.parse(retrievedMsgArray);
   if(retrievedMsgArray){
@@ -265,3 +267,18 @@ Array.prototype.unique = function() {
   }
   return arr;
 }
+
+function getUserFromPhone(phone_number,phone_book){
+        console.log(phone_number,phone_book);
+        user_list = Object.keys(phone_book);
+       
+
+        for (var i = 0 ;i< user_list.length;i++){
+        console.log(phone_book[user_list[i]]['phone'] == phone_number)          
+          if(phone_book[user_list[i]]['phone'] == phone_number)
+            return user_list[i];
+        }
+
+        console.log("User does not exist with phone phone number",phone_number);
+        return -1;
+      }

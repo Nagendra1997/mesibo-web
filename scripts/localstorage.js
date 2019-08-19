@@ -21,7 +21,6 @@ function LocalStorage_LoadHistory(selected_user){
         else
           createRecievedBubble(msg_data);
         }
-        updateLastMsg(selected_user);
 
     }
 }
