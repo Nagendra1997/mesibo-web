@@ -158,6 +158,21 @@ function createDateHeaderBlock(date_value){
           mylist.appendChild(iDiv);
 }
 
+function getUserFromPhone(phone_number,phone_book){
+        console.log(phone_number,phone_book);
+        user_list = Object.keys(phone_book);
+       
+
+        for (var i = 0 ;i< user_list.length;i++){
+        console.log(phone_book[user_list[i]]['phone'] == phone_number)          
+          if(phone_book[user_list[i]]['phone'] == phone_number)
+            return user_list[i];
+        }
+
+        console.log("User does not exist with phone phone number",phone_number);
+        return -1;
+      }
+
 
 function updateStatusTick(statusTick,status){
     if(statusTick){
@@ -194,10 +209,10 @@ function updateProfilePic(user_name,file_path){
   document.getElementById(user_name).setAttribute("src",file_path);
 }
 
-function updateLastMsg(peer){
-  var lastMsgId = String(peer)+"_LastMsg";
-  var lastMsgDateId = String(peer)+"_LastDate";
-  var lastMsgStatusId = String(peer)+"_LastStatus";
+function updateLastMsg(selected_user_name,selected_user_id){
+  var lastMsgId = String(selected_user_name)+"_LastMsg";
+  var lastMsgDateId = String(selected_user_name)+"_LastDate";
+  var lastMsgStatusId = String(selected_user_name)+"_LastStatus";
 
   var lastMsgArea=document.getElementById(lastMsgId);
   $(lastMsgId).text('');
@@ -206,10 +221,12 @@ function updateLastMsg(peer){
   var lastMsgStatusArea=document.getElementById(lastMsgStatusId);
   // console.log(lastMsgStatusArea);
 
-  var retrievedMsgArray = localStorage.getItem(peer);
+  var retrievedMsgArray = localStorage.getItem(selected_user_id);
   retrievedMsgArray=JSON.parse(retrievedMsgArray);
 
+  console.log("Last Message",retrievedMsgArray);
   if(retrievedMsgArray){
+  console.log("Last Message",retrievedMsgArray);
 
   var lastMsgContent=retrievedMsgArray[retrievedMsgArray.length -1];
   if(lastMsgContent['data'].length > 20)
@@ -218,6 +235,7 @@ function updateLastMsg(peer){
       lastMsgArea.innerHTML=lastMsgContent['data'];
   
   lastMsgDateArea.innerHTML=timeNow2(lastMsgContent['ts']);
+
 
   if(lastMsgContent['flag']==3){ //Message Recieved, Don't show status tick
     lastMsgStatusArea.style.display = "none";
@@ -230,23 +248,23 @@ function updateLastMsg(peer){
 
 }
 
-function getLastTs(peer){
-  var retrievedMsgArray = localStorage.getItem(peer);
+function getLastTs(selected_user_id){
+  var retrievedMsgArray = localStorage.getItem(selected_user_id);
 
   retrievedMsgArray=JSON.parse(retrievedMsgArray);
   if(retrievedMsgArray){
   console.log(retrievedMsgArray);
-  var lastMsgContent=retrievedMsgArray[retrievedMsgArray.length -1];
+  var lastMsgContent=retrievedMsgArray[retrievedMsgArray.length - 1];
   return lastMsgContent['ts'];
   }
   else
     return 0 ;
 }
 
-function updateUserListOrder(){
+function updateUserListOrder(phone_book){
   var $divs = $("#UserList .row.sideBar-body");
   var TimeOrderedDivs = $divs.sort(function(a,b){
-        return getLastTs(b.id) - getLastTs(a.id);
+        return getLastTs(phone_book[b.id]['phone']) - getLastTs((phone_book[a.id]['phone']));
     });
     $("#UserList").html(TimeOrderedDivs);
 }
@@ -268,17 +286,3 @@ Array.prototype.unique = function() {
   return arr;
 }
 
-function getUserFromPhone(phone_number,phone_book){
-        console.log(phone_number,phone_book);
-        user_list = Object.keys(phone_book);
-       
-
-        for (var i = 0 ;i< user_list.length;i++){
-        console.log(phone_book[user_list[i]]['phone'] == phone_number)          
-          if(phone_book[user_list[i]]['phone'] == phone_number)
-            return user_list[i];
-        }
-
-        console.log("User does not exist with phone phone number",phone_number);
-        return -1;
-      }

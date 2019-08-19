@@ -415,7 +415,7 @@
 
       var $divs = $("#UserList .row.sideBar-body");
 
-            var PhoneBook={
+      var PhoneBook={
       'Nagendra':
       {'phone':'917019882153',
       'photo':'https://bootdey.com/img/Content/avatar/avatar1.png'},
@@ -441,6 +441,7 @@
       else
         active_user_list=['917019882153','917200721825','919448967903'];
 
+      active_user_list=['917019882153','917200721825','919448967903'];
       console.log(active_user_list);
 
       for(var i =0; i<active_user_list.length;i++) {
@@ -452,10 +453,10 @@
         var user_name = getUserFromPhone(active_user_list[i],PhoneBook)
         console.log(user_name);
         updateProfilePic(user_name+"_ProfilePicture",PhoneBook[user_name]['photo']);
-        updateLastMsg(user_name);
+        updateLastMsg(user_name,active_user_list[i]);
       }
 
-      updateUserListOrder();
+      updateUserListOrder(PhoneBook);
 
 
       function TestNotify() {
@@ -475,8 +476,8 @@
     LocalStorage_UpdateItemSent(m);
     var statustick=document.getElementById(m.id);
     updateStatusTick(statustick,m.status);
-    updateLastMsg(getUserFromPhone(m.peer,PhoneBook));
-    updateUserListOrder();
+    updateLastMsg(getUserFromPhone(m.peer,PhoneBook),m.peer);
+    updateUserListOrder(PhoneBook);
   }
 
   TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
@@ -484,17 +485,29 @@
     console.log("TestNotify.prototype.Mesibo_OnMessage: from "  + m.peer);
     var string = new TextDecoder("utf-8").decode(data);
     console.log(string)
+    msgRecievedTimeStamp = new Date;
   
     if(m.flag==3){
-      LocalStorage_UpdateItemRecieved(m,string);
-      if(selected_user==m.peer)
-        createRecievedBubble({'data':string,'ts':+ new Date});
+
+      if(selected_user==m.peer){
+      
+      if(!getLastTs(m.peer,PhoneBook)){
+            console.log("header");
+            createDateHeaderBlock(dateNow(msgRecievedTimeStamp));
+          }
+          else if(!(dateNow(getLastTs(m.peer,PhoneBook)) == dateNow(msgRecievedTimeStamp,PhoneBook)))createDateHeaderBlock(msgRecievedTimeStamp);
+
+      createRecievedBubble({'data':string,'ts':+ msgRecievedTimeStamp });  
+
       updateScroll();
-      updateLastMsg(getUserFromPhone(m.peer,PhoneBook));
-      updateUserListOrder();
-    }
+      }
+
+    LocalStorage_UpdateItemRecieved(m,string);
+    updateUserListOrder(PhoneBook);
+    updateLastMsg(getUserFromPhone(m.peer,PhoneBook),m.peer);
 
   }
+}
      // var accessToken = "aea59d3713701704bed9fd5952d9419ba8c4209a335e664ef2e" 
       var accessToken = "4080ba6528abe3bdbef60cd497f9193199dadb6b635616e2216a80" 
         
@@ -515,8 +528,6 @@
         var msgdata="I have recieved hi!" ;
 
         msgdata= document.getElementById("comment").value;
-
-
       
         
       if(msgdata){ 
@@ -524,11 +535,12 @@
           msg_payload={'id':id,'peer':p.peer,'params':p,'data':msgdata,'groupid':0,
             'ts': + new Date,'flag':0,'status':MESIBO_MSGSTATUS_OUTBOX};
 
-          if(!getLastTs(p.peer)){
+          // console.log("LAST_TS",getLastTs(p.peer));
+          if(!getLastTs(p.peer,PhoneBook)){
             console.log("header");
             createDateHeaderBlock(dateNow(msg_payload['ts']));
           }
-          else if(!(dateNow(getLastTs(p.peer)) == dateNow(msg_payload['ts'])))createDateHeaderBlock(dateNow(msg_payload['ts']));  
+          else if(!(dateNow(getLastTs(p.peer,PhoneBook)) == dateNow(msg_payload['ts'],PhoneBook)))createDateHeaderBlock(dateNow(msg_payload['ts']));  
       
           LocalStorage_NewItemSent(id,p.peer,msg_payload);
           LocalSorage_MsgPeerHash(id,p.peer);
@@ -538,37 +550,41 @@
               retrievedMsgHash = JSON.parse(retrievedMsgHash);
 
           // createDateHeader(msg_payload,getLastTs(p.peer));
-          console.log(dateNow(getLastTs(p.peer)),dateNow(msg_payload['ts']));
-          console.log(dateNow(getLastTs(p.peer))==dateNow(msg_payload['ts']));
+          // console.log(dateNow(getLastTs(p.peer)),dateNow(msg_payload['ts']));
+          // console.log(dateNow(getLastTs(p.peer))==dateNow(msg_payload['ts']));
 
-          console.log("date",getLastTs(p.peer));
+          // console.log("date",getLastTs(p.peer));
                     
 
           createSentBubble(msg_payload);
           console.log(p,id,msgdata);
           api.sendMessage(p,id,msgdata);
           $('textarea').val('');
-          updateLastMsg(getUserFromPhone(p.peer,PhoneBook));
+          console.log(PhoneBook);
+          updateLastMsg(getUserFromPhone(p.peer,PhoneBook),p.peer);
           updateScroll();
-          updateUserListOrder();
+          updateUserListOrder(PhoneBook);
       }
      }
 
 
 
     function loadChatHistory(selected_user_name){
+
       console.log(">>>>>>>>>>>>>>",selected_user_name);
       if(current_selected_user_name)
         $('#'+current_selected_user_name).css({"background-color":"#fff"});
 
       selected_user = PhoneBook[selected_user_name]['phone'];
+
       console.log("Loading history for "+ selected_user);
       $("#SelectedUserName").html(selected_user_name);
       $("#SelectedUserPicture").attr('src',PhoneBook[selected_user_name]['photo']);
       $('#'+selected_user_name).css({"background-color":"#e5e5e5"});
       $('#conversation').empty();
       LocalStorage_LoadHistory(selected_user);
-      updateLastMsg(selected_user_name);
+      console.log(selected_user);
+      updateLastMsg(selected_user_name,selected_user);
       current_selected_user_name=selected_user_name;
       updateScroll();
       
