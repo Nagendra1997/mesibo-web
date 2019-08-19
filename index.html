@@ -56,7 +56,7 @@
                 <div class="col-sm-8 col-xs-8 sideBar-name">
                   <span class="name-meta" ><strong>Nagendra</strong>
                   <div> 
-                  <img src=""  class="last_msg_status" id=Nagendra_LastStatus>
+                  <img src=""  class="last_msg_status" id=Nagendra_LastStatus style="display: none;">
                   <div class="last_msg_text"id='Nagendra_LastMsg'></div>    
                   </div> 
                 </span>
@@ -80,7 +80,7 @@
                 <div class="col-sm-8 col-xs-8 sideBar-name">
                   <span class="name-meta" ><strong>Ankit</strong>
                   <div> 
-                    <img src="" class='last_msg_status' id=Ankit_LastStatus>
+                    <img src="" class='last_msg_status' id=Ankit_LastStatus style="display: none;">
                     <div class='last_msg_text' id='Ankit_LastMsg'> </div>
                   </div>
                  </span>
@@ -103,7 +103,7 @@
                 <div class="col-sm-8 col-xs-8 sideBar-name">
                   <span  class="name-meta"><strong>Priya</strong>
                     <div>
-                    <img src="" class="last_msg_status" id=Priya_LastStatus>
+                    <img src="" class="last_msg_status" id=Priya_LastStatus style="display: none;">
                       <div class="last_msg_text" id='Priya_LastMsg'></div>
                   </span>
                 </div>  
@@ -415,8 +415,6 @@
 
       var $divs = $("#UserList .row.sideBar-body");
 
-      
-
 
       var active_user_list=localStorage.getItem("Mesibo_MsgUsr_Hash");
       if(active_user_list){
@@ -429,9 +427,9 @@
 
       for(var i =0; i<active_user_list.length;i++) {
         // console.log(active_user_list[i]);
-        var lastMsgStatusId = String(active_user_list[i])+"_LastStatus";
-        lastMsgStatusArea=document.getElementById(lastMsgStatusId);
-        lastMsgStatusArea.style.display = "none";
+        // var lastMsgStatusId = String(active_user_list[i])+"_LastStatus";
+        // lastMsgStatusArea=document.getElementById(lastMsgStatusId);
+        // lastMsgStatusArea.style.display = "none";
         updateLastMsg(active_user_list[i]);
       }
 
@@ -496,12 +494,30 @@
         var msgdata="I have recieved hi!" ;
 
         msgdata= document.getElementById("comment").value;
+
+    //           var PhoneBook={
+    //   'Nagendra':
+    //   {'phone':'917019882153',
+    //   'photo':'https://bootdey.com/img/Content/avatar/avatar1.png'},
+    //   'Ankit':
+    //   {'phone':'917200721825',
+    //   'photo':'https://bootdey.com/img/Content/avatar/avatar2.png'},
+    //   'Priya':
+    //   {'phone':'919448967903',
+    //   'photo':'https://bootdey.com/img/Content/avatar/avatar3.png'},
+    // }; 
       
         
       if(msgdata){ 
 
           msg_payload={'id':id,'peer':p.peer,'params':p,'data':msgdata,'groupid':0,
             'ts': + new Date,'flag':0,'status':MESIBO_MSGSTATUS_OUTBOX};
+
+          if(!getLastTs(p.peer)){
+            console.log("header");
+            createDateHeaderBlock(dateNow(msg_payload['ts']));
+          }
+          else if(!(dateNow(getLastTs(p.peer)) == dateNow(msg_payload['ts'])))createDateHeaderBlock(dateNow(msg_payload['ts']));  
       
           LocalStorage_NewItemSent(id,p.peer,msg_payload);
           LocalSorage_MsgPeerHash(id,p.peer);
@@ -510,7 +526,12 @@
           if(retrievedMsgHash)
               retrievedMsgHash = JSON.parse(retrievedMsgHash);
 
-          // createDateHeader(msg_payload,getLastTs());            
+          // createDateHeader(msg_payload,getLastTs(p.peer));
+          console.log(dateNow(getLastTs(p.peer)),dateNow(msg_payload['ts']));
+          console.log(dateNow(getLastTs(p.peer))==dateNow(msg_payload['ts']));
+
+          console.log("date",getLastTs(p.peer));
+                    
 
           createSentBubble(msg_payload);
           console.log(p,id,msgdata);
@@ -542,7 +563,7 @@
      document.onkeydown = function (e) {
       e = e || window.event;
       switch (e.which || e.keyCode) {
-          case 13 : //Your Code Here (13 is ascii code for 'ENTER')
+          case 13 : //(13 is ascii code for 'ENTER')
               sendMessage();
               break;
     }

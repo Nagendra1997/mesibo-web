@@ -71,7 +71,7 @@ function LocalStorage_NewItemSent(id,peer,msg_payload){
   retrievedMsgArray.push(msg_payload);
   localStorage.setItem(peer,JSON.stringify(retrievedMsgArray));
 
-  // console.log(JSON.parse(localStorage.getItem(peer)));
+  console.log(JSON.parse(localStorage.getItem(peer)));
 }
 
 

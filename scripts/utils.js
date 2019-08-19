@@ -141,6 +141,24 @@ function createDateHeader(msg_data,previous_date){
         return previous_date;
 }
 
+function createDateHeaderBlock(date_value){
+          var iDiv=document.createElement('div');
+          iDiv.className="row message-previous";
+          var innerDiv=document.createElement('div');
+          innerDiv.className="col-sm-12 previous";
+          var headerDiv=document.createElement('div');
+          headerDiv.className='date_header';
+          var datetext=document.createTextNode(date_value);
+          
+          headerDiv.append(datetext);
+          innerDiv.append(headerDiv);
+          iDiv.append(innerDiv);
+
+          var mylist = document.getElementById("conversation")
+          mylist.appendChild(iDiv);
+}
+
+
 function updateStatusTick(statusTick,status){
     if(statusTick){
 
@@ -190,18 +208,18 @@ function updateLastMsg(peer){
   if(retrievedMsgArray){
 
   var lastMsgContent=retrievedMsgArray[retrievedMsgArray.length -1];
-  if(lastMsgContent['data'].length > 25)
-      lastMsgArea.innerHTML=lastMsgContent['data'].slice(0,25) + " ...";
+  if(lastMsgContent['data'].length > 20)
+      lastMsgArea.innerHTML=lastMsgContent['data'].slice(0,20) + " ...";
   else
       lastMsgArea.innerHTML=lastMsgContent['data'];
   
   lastMsgDateArea.innerHTML=timeNow2(lastMsgContent['ts']);
-  // console.log(lastMsgContent);
 
-  if(lastMsgContent['flag']==3)
+  if(lastMsgContent['flag']==3){ //Message Recieved, Don't show status tick
     lastMsgStatusArea.style.display = "none";
+  }
   else {
-    lastMsgStatusArea.style.display = "true";
+    lastMsgStatusArea.style.display = "inline";
     updateStatusTick(lastMsgStatusArea,lastMsgContent['status']);
     }
   }
@@ -209,9 +227,13 @@ function updateLastMsg(peer){
 }
 
 function getLastTs(peer){
+  console.log(peer);
   var retrievedMsgArray = localStorage.getItem(peer);
+  // console.log()
+
   retrievedMsgArray=JSON.parse(retrievedMsgArray);
   if(retrievedMsgArray){
+  console.log(retrievedMsgArray);
   var lastMsgContent=retrievedMsgArray[retrievedMsgArray.length -1];
   return lastMsgContent['ts'];
   }
