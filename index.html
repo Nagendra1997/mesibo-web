@@ -550,36 +550,18 @@
 
             console.log("Making header for date");
             
-            if(dateNow(msg_payload['ts']) == dateNow(new Date()))
+            if(dateNow(msg_payload['ts']) == dateNow(+ new Date()))
               createDateHeaderBlock("Today");
-            else if(dateNow(msg_payload['ts']) == dateYesterday(msg_payload['ts']))
-              createDateHeaderBlock("Yesterday");
             else
               createDateHeaderBlock(dateNow(msg_payload['ts']));
           }
 
-
-
-
-          // if(!getLastTs(p.peer,PhoneBook)){
-          //   console.log("header");
-          //   createDateHeaderBlock(dateNow(msg_payload['ts']));
-          // }
-          // else if(!(dateNow(getLastTs(p.peer,PhoneBook)) == dateNow(msg_payload['ts'],PhoneBook)))createDateHeaderBlock(dateNow(msg_payload['ts']));  
-      
           LocalStorage_NewItemSent(id,p.peer,msg_payload);
           LocalSorage_MsgPeerHash(id,p.peer);
 
           var retrievedMsgHash = localStorage.getItem("Mesibo_MsgUsr_Hash");
           if(retrievedMsgHash)
               retrievedMsgHash = JSON.parse(retrievedMsgHash);
-
-          // createDateHeader(msg_payload,getLastTs(p.peer));
-          // console.log(dateNow(getLastTs(p.peer)),dateNow(msg_payload['ts']));
-          // console.log(dateNow(getLastTs(p.peer))==dateNow(msg_payload['ts']));
-
-          // console.log("date",getLastTs(p.peer));
-                    
 
           createSentBubble(msg_payload);
           console.log(p,id,msgdata);

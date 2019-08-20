@@ -127,15 +127,16 @@ function createSentBubble(msg_data){
 
 function createDateHeader_forHistory(msg_data,previous_date){
         var current_date=dateNow(msg_data['ts']);
+        // console.log(current date,msg_data['data'],msg_data['ts']);
 
-        if(previous_date==0){
+        if(previous_date!=current_date){
           previous_date = current_date;
           // createDateHeaderBlock(current_date);
           console.log("Making header for date"); 
             
-            if(current_date == dateNow(new Date()))
+            if(current_date == dateNow(+ new Date()))
               createDateHeaderBlock("Today");
-            else if(current_date == dateYesterday(new Date()))
+            else if(current_date == dateYesterday(+ new Date()))
               createDateHeaderBlock("Yesterday");
             else
               createDateHeaderBlock(current_date);
@@ -237,7 +238,7 @@ function updateLastMsg(selected_user_name,selected_user_id){
   else
       lastMsgArea.innerHTML=lastMsgContent['data'];
   
-  
+
   if(dateNow(lastMsgContent['ts']) == dateYesterday(+ new Date()))
     lastMsgDateArea.innerHTML='Yesterday';
   else if(dateNow(lastMsgContent['ts']) == dateNow(+ new Date()))

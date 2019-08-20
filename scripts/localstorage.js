@@ -1,6 +1,7 @@
 //localstorage.js
 
 function LocalStorage_LoadHistory(selected_user){
+      console.log("===>LocalStorage_LoadHistory called")
   
       msg_history=JSON.parse(localStorage.getItem(selected_user));
 
