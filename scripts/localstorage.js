@@ -14,7 +14,7 @@ function LocalStorage_LoadHistory(selected_user){
       for (var i=0;i<msg_hist_data.length;i++){
 
         var msg_data = msg_hist_data[i];
-        previous_date =createDateHeader(msg_data,previous_date);
+        previous_date =createDateHeader_forHistory(msg_data,previous_date);
 
         if(msg_data['flag'] == 0)
           createSentBubble(msg_data); 

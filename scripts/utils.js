@@ -53,6 +53,15 @@
         return dateString.slice(0,4)+', '+dateString.slice(4,10);
       }
 
+      function dateYesterday(ts){
+        var today = new Date(ts);
+        var yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        yesterdayString = yesterday.toString();
+
+        return yesterdayString.slice(0,4)+', '+ yesterdayString.slice(4,10);
+      }
+
 
 function createRecievedBubble(msg_data){
   var msgBodyDiv = document.createElement('div');
@@ -116,28 +125,22 @@ function createSentBubble(msg_data){
 }
 
 
-function createDateHeader(msg_data,previous_date){
+function createDateHeader_forHistory(msg_data,previous_date){
         var current_date=dateNow(msg_data['ts']);
 
         if(previous_date==0){
           previous_date = current_date;
-
-          var iDiv=document.createElement('div');
-          iDiv.className="row message-previous";
-          var innerDiv=document.createElement('div');
-          innerDiv.className="col-sm-12 previous";
-          var headerDiv=document.createElement('div');
-          headerDiv.className='date_header';
-          var datetext=document.createTextNode(current_date);
+          // createDateHeaderBlock(current_date);
+          console.log("Making header for date"); 
+            
+            if(current_date == dateNow(new Date()))
+              createDateHeaderBlock("Today");
+            else if(current_date == dateYesterday(new Date()))
+              createDateHeaderBlock("Yesterday");
+            else
+              createDateHeaderBlock(current_date);
+          }
           
-          headerDiv.append(datetext);
-          innerDiv.append(headerDiv);
-          iDiv.append(innerDiv);
-
-          var mylist = document.getElementById("conversation")
-          mylist.appendChild(iDiv);
-
-        }
         return previous_date;
 }
 
