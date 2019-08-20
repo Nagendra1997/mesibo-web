@@ -395,7 +395,7 @@
           <i class="fa fa-smile-o fa-2x"></i>
         </div>
         <div class="col-sm-9 col-xs-9 reply-main">
-          <textarea class="form-control" rows="1" id="comment"></textarea>
+          <textarea class="textarea" rows="1" id="comment"></textarea>
         </div>
         <div class="col-sm-1 col-xs-1 reply-recording">
           <i class="fa fa-microphone fa-2x" aria-hidden="true"></i>
@@ -525,12 +525,11 @@
         if(!selected_user)return;
 
         var id = parseInt(Math.random()*10000);
-        var msgdata="I have recieved hi!" ;
+        var msgdata="Hello from Mesibo Javascript API!" ;
 
         msgdata= document.getElementById("comment").value;
-      
         
-      if(msgdata){ 
+        if(msgdata){ 
 
           msg_payload={'id':id,'peer':p.peer,'params':p,'data':msgdata,'groupid':0,
             'ts': + new Date,'flag':0,'status':MESIBO_MSGSTATUS_OUTBOX};
@@ -559,7 +558,9 @@
           createSentBubble(msg_payload);
           console.log(p,id,msgdata);
           api.sendMessage(p,id,msgdata);
-          $('textarea').val('');
+          // $('textarea').val('');
+          document.getElementById("comment").value = "";
+          document.querySelector("textarea").setSelectionRange(0,0);
           console.log(PhoneBook);
           updateLastMsg(getUserFromPhone(p.peer,PhoneBook),p.peer);
           updateScroll();
