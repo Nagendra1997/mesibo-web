@@ -237,7 +237,13 @@ function updateLastMsg(selected_user_name,selected_user_id){
   else
       lastMsgArea.innerHTML=lastMsgContent['data'];
   
-  lastMsgDateArea.innerHTML=timeNow2(lastMsgContent['ts']);
+  
+  if(dateNow(lastMsgContent['ts']) == dateYesterday(+ new Date()))
+    lastMsgDateArea.innerHTML='Yesterday';
+  else if(dateNow(lastMsgContent['ts']) == dateNow(+ new Date()))
+    lastMsgDateArea.innerHTML=timeNow2(lastMsgContent['ts']);
+  else
+    lastMsgDateArea.innerHTML=dateNow(lastMsgContent['ts']);
 
 
   if(lastMsgContent['flag']==3){ //Message Recieved, Don't show status tick
