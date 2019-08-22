@@ -160,7 +160,7 @@ else
   PhoneBook = JSON.parse(PhoneBook);
 console.log(PhoneBook);
 
-activeUserList = LocalStorage_GetActiveUsers();
+var activeUserList = LocalStorage_GetActiveUsers();
 
 var contactSyncUsrToken = "5d3ca7a43590fe140baa16ce60ecb159b22401bebe1153bcb";
 fetchContacts(contactSyncUsrToken,PhoneBook);
