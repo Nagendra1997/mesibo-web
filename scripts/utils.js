@@ -123,7 +123,7 @@ function createDateHeader_forHistory(msg_data, previous_date) {
   if (previous_date != current_date) {
     previous_date = current_date;
     // createDateHeaderBlock(current_date);
-    console.log("Making header for date");
+    // console.log("Making header for date");
 
     if (current_date == dateNow(+new Date()))
       createDateHeaderBlock("Today");
@@ -154,12 +154,12 @@ function createDateHeaderBlock(date_value) {
 }
 
 function getUserFromPhone(phone_number, phone_book) {
-  console.log(phone_number, phone_book);
+  // console.log(phone_number, phone_book);
   user_list = Object.keys(phone_book);
 
 
   for (var i = 0; i < user_list.length; i++) {
-    console.log(phone_book[user_list[i]]['phone'] == phone_number)
+    // console.log(phone_book[user_list[i]]['phone'] == phone_number)
     if (phone_book[user_list[i]]['phone'] == phone_number)
       return user_list[i];
   }
@@ -205,23 +205,25 @@ function updateProfilePic(user_name, file_path) {
 }
 
 function updateLastMsg(selected_user_name, selected_user_id) {
+
   var lastMsgId = String(selected_user_name) + "_LastMsg";
   var lastMsgDateId = String(selected_user_name) + "_LastDate";
   var lastMsgStatusId = String(selected_user_name) + "_LastStatus";
+  console.log(lastMsgStatusId);
 
   var lastMsgArea = document.getElementById(lastMsgId);
   $(lastMsgId).text('');
   var lastMsgDateArea = document.getElementById(lastMsgDateId);
   $(lastMsgDateId).text('');
   var lastMsgStatusArea = document.getElementById(lastMsgStatusId);
-  // console.log(lastMsgStatusArea);
+  
 
   var retrievedMsgArray = localStorage.getItem(selected_user_id);
   retrievedMsgArray = JSON.parse(retrievedMsgArray);
 
-  console.log("Last Message", retrievedMsgArray);
+  // console.log("Last Message", retrievedMsgArray);
   if (retrievedMsgArray) {
-    console.log("Last Message", retrievedMsgArray);
+    // console.log("Last Message", retrievedMsgArray);
 
     var lastMsgContent = retrievedMsgArray[retrievedMsgArray.length - 1];
     if (lastMsgContent['data'].length > 20)
@@ -235,7 +237,10 @@ function updateLastMsg(selected_user_name, selected_user_id) {
     else if (dateNow(lastMsgContent['ts']) == dateNow(+new Date()))
       lastMsgDateArea.innerHTML = timeFromTs(lastMsgContent['ts']);
     else
-      lastMsgDateArea.innerHTML = dateFormat(new Date(lastMsgContent['ts']), "dd/mm/yyyy");
+      { 
+        var dateValue= new Date(lastMsgContent['ts']);
+        lastMsgDateArea.innerHTML = dateValue.getDate() + "/" + (dateValue.getMonth() + 1 )+ "/" + dateValue.getFullYear()
+    }
 
 
     if (lastMsgContent['flag'] == 3) { //Message Recieved, Don't show status tick
@@ -253,7 +258,7 @@ function getLastTs(selected_user_id) {
 
   retrievedMsgArray = JSON.parse(retrievedMsgArray);
   if (retrievedMsgArray) {
-    console.log(retrievedMsgArray);
+    // console.log(retrievedMsgArray);
     var lastMsgContent = retrievedMsgArray[retrievedMsgArray.length - 1];
     return lastMsgContent['ts'];
   } else
@@ -284,3 +289,73 @@ Array.prototype.unique = function() {
   }
   return arr;
 }
+
+function createContactsListDisplay(contactsArray){
+  if(contactsArray){
+    for(var i=0;i<contactsArray.length;i++)
+      createProfileBlock(contactsArray[i]);
+  }
+
+}
+
+function getSyncPhoneBook(contactsArray){
+  var SyncPhoneBook={};
+  if(contactsArray){
+    for(var i=0;i<contactsArray.length;i++)
+      SyncPhoneBook[contactsArray[i]['name']] = contactsArray[i] ;
+  }
+  return SyncPhoneBook;
+  
+}
+
+function createProfileBlock(profileDetails){
+  rowBodyDiv = document.createElement('div');
+  rowBodyDiv.className = "row sideBar-body"
+  profilePicDiv = document.createElement('div');
+  profilePicDiv.className = "col-sm-3 col-xs-3 sideBar-avatar";
+  profilePicIconDiv = document.createElement('div');
+  profilePicIconDiv.className="avatar-icon";
+  profilePic = document.createElement('img');
+  if(profileDetails['photo'])
+    profilePic.setAttribute("src","https://appimages.mesibo.com/"+profileDetails['photo']);
+  else
+    profilePic.setAttribute("src","images/profile/default-profile-icon-16.jpg ");
+
+  profileNameMainDiv = document.createElement('div');
+  profileNameMainDiv.className = "col-sm-9 col-xs-9 sideBar-main";
+  profileNameRowDiv = document.createElement('div');
+  profileNameRowDiv.className = "row";
+  profileNameBlockDiv = document.createElement('div');
+  profileNameBlockDiv.className = "col-sm-8 col-xs-8 sideBar-name";
+  profileNameSpan = document.createElement('span');
+  profileNameSpan.className= "name-meta";
+
+  var profileNameValidText = "Unknown"
+  if(profileDetails['name'])
+    profileNameValidText = profileDetails['name'];
+
+  profileNameText = document.createTextNode(profileNameValidText); //Name
+  profileNameStrongText = document.createElement('strong');
+  profileStatusPara = document.createElement('p');
+  profileStatusText = document.createTextNode(profileDetails['status']); //Status
+
+  profileStatusPara.append(profileStatusText);
+  profileNameStrongText.append(profileNameText)
+  profileNameSpan.append(profileNameStrongText);
+  profileNameSpan.append(profileStatusPara);
+  profileNameBlockDiv.append(profileNameSpan);
+  profileNameRowDiv.append(profileNameBlockDiv);
+  profileNameMainDiv.append(profileNameRowDiv);
+
+  profilePicIconDiv.append(profilePic);
+  profilePicDiv.append(profilePicIconDiv);
+
+  rowBodyDiv.append(profilePicDiv);
+  rowBodyDiv.append(profileNameMainDiv);
+
+
+  var myContactsList = document.getElementById("syncedContactsList");
+  myContactsList.appendChild(rowBodyDiv);
+
+}
+          
