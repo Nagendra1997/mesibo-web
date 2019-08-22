@@ -484,6 +484,7 @@ async function fetchContacts(usrToken, PhoneBook) {
 }
 
 function displayActiveUsers(activeUserList, PhoneBook) {
+  console.log("===>displayActiveUsers called");
 
   for (var i = 0; i < activeUserList.length; i++) {
     var user_name = getUserFromPhone(activeUserList[i], PhoneBook)
