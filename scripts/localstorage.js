@@ -109,3 +109,14 @@ function LocalStorage_GetPeerFromId(msgId) {
   return retrievedMsgHash[msgId];
 
 }
+
+function LocalStorage_GetActiveUsers() {
+  var activeUserList = localStorage.getItem("Mesibo_MsgUsr_Hash");
+  if (activeUserList) {
+    activeUserList = Object.values(JSON.parse(activeUserList));
+    activeUserList = activeUserList.unique()
+  } else
+
+    activeUserList = [];
+  return activeUserList;
+}

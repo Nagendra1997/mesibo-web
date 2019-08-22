@@ -216,7 +216,7 @@ function updateLastMsg(selected_user_name, selected_user_id) {
   var lastMsgDateArea = document.getElementById(lastMsgDateId);
   $(lastMsgDateId).text('');
   var lastMsgStatusArea = document.getElementById(lastMsgStatusId);
-  
+
 
   var retrievedMsgArray = localStorage.getItem(selected_user_id);
   retrievedMsgArray = JSON.parse(retrievedMsgArray);
@@ -236,10 +236,9 @@ function updateLastMsg(selected_user_name, selected_user_id) {
       lastMsgDateArea.innerHTML = 'Yesterday';
     else if (dateNow(lastMsgContent['ts']) == dateNow(+new Date()))
       lastMsgDateArea.innerHTML = timeFromTs(lastMsgContent['ts']);
-    else
-      { 
-        var dateValue= new Date(lastMsgContent['ts']);
-        lastMsgDateArea.innerHTML = dateValue.getDate() + "/" + (dateValue.getMonth() + 1 )+ "/" + dateValue.getFullYear()
+    else {
+      var dateValue = new Date(lastMsgContent['ts']);
+      lastMsgDateArea.innerHTML = dateValue.getDate() + "/" + (dateValue.getMonth() + 1) + "/" + dateValue.getFullYear()
     }
 
 
@@ -290,36 +289,71 @@ Array.prototype.unique = function() {
   return arr;
 }
 
-function createContactsListDisplay(contactsArray){
-  if(contactsArray){
-    for(var i=0;i<contactsArray.length;i++)
+function createContactsListDisplay(contactsArray) {
+  console.log("===>createContactsListDisplay called ");
+  console.log(contactsArray);
+  if (contactsArray) {
+    for (var i = 0; i < contactsArray.length; i++)
       createProfileBlock(contactsArray[i]);
   }
 
 }
 
-function getSyncPhoneBook(contactsArray){
-  var SyncPhoneBook={};
-  if(contactsArray){
-    for(var i=0;i<contactsArray.length;i++)
-      SyncPhoneBook[contactsArray[i]['name']] = contactsArray[i] ;
+function getSyncPhoneBook(contactsArray) {
+  console.log("===>getSyncPhoneBook called");
+  //Get from LocalStorage or somewhere
+  var SyncPhoneBook = {
+    "917019882153": {
+      "name": "Nagendra Y",
+      "phone": "917019882153"
+    },
+    "917200721825": {
+      "name": "Ankit Kumar",
+      "phone": "917200721825"
+    },
+    "919449114208": {
+      "name": "Krishna Priya",
+      "phone": "919449114208"
+    },
+    "919113203545": {
+      "name": "Yusuf Motiwala",
+      "phone": "919113203545"
+    },
+  };
+
+  var NewPhoneBook = {};
+
+  if (contactsArray && SyncPhoneBook) {
+    for (var i = 0; i < contactsArray.length; i++) {
+      if (Object.keys(SyncPhoneBook).includes(contactsArray[i]['phone'])) {
+        console.log("Make Sync")
+        contactsArray[i]['name'] = SyncPhoneBook[contactsArray[i]['phone']]['name'];
+        NewPhoneBook[contactsArray[i]['name']] = contactsArray[i];
+      }
+    }
   }
-  return SyncPhoneBook;
-  
+  return NewPhoneBook;
+
 }
 
-function createProfileBlock(profileDetails){
+function createProfileBlock(profileDetails) {
+  // console.log("===> createProfileBlock called ");
   rowBodyDiv = document.createElement('div');
-  rowBodyDiv.className = "row sideBar-body"
+  rowBodyDiv.className = "row sideBar-body";
+  rowBodyDiv.onclick = function() {
+    loadChatHistory(profileDetails['name']);
+  };
+  // console.log(function() { loadChatHistory(profileDetails['name'])});
+
   profilePicDiv = document.createElement('div');
   profilePicDiv.className = "col-sm-3 col-xs-3 sideBar-avatar";
   profilePicIconDiv = document.createElement('div');
-  profilePicIconDiv.className="avatar-icon";
+  profilePicIconDiv.className = "avatar-icon";
   profilePic = document.createElement('img');
-  if(profileDetails['photo'])
-    profilePic.setAttribute("src","https://appimages.mesibo.com/"+profileDetails['photo']);
+  if (profileDetails['photo'])
+    profilePic.setAttribute("src", "https://appimages.mesibo.com/" + profileDetails['photo']);
   else
-    profilePic.setAttribute("src","images/profile/default-profile-icon-16.jpg ");
+    profilePic.setAttribute("src", "images/profile/default-profile-icon-16.jpg ");
 
   profileNameMainDiv = document.createElement('div');
   profileNameMainDiv.className = "col-sm-9 col-xs-9 sideBar-main";
@@ -328,10 +362,10 @@ function createProfileBlock(profileDetails){
   profileNameBlockDiv = document.createElement('div');
   profileNameBlockDiv.className = "col-sm-8 col-xs-8 sideBar-name";
   profileNameSpan = document.createElement('span');
-  profileNameSpan.className= "name-meta";
+  profileNameSpan.className = "name-meta";
 
   var profileNameValidText = "Unknown"
-  if(profileDetails['name'])
+  if (profileDetails['name'])
     profileNameValidText = profileDetails['name'];
 
   profileNameText = document.createTextNode(profileNameValidText); //Name
@@ -358,4 +392,103 @@ function createProfileBlock(profileDetails){
   myContactsList.appendChild(rowBodyDiv);
 
 }
-          
+
+function createActivePeerBlock(userName, PhoneBook) {
+  console.log("===>createActivePeerBlock called for", userName);
+
+  rowBodyDiv = document.createElement('div');
+  rowBodyDiv.className = "row sideBar-body";
+  rowBodyDiv.onclick = function() {
+    loadChatHistory(userName);
+  };
+
+  rowBodyDiv.setAttribute("id", userName);
+  profilePicDiv = document.createElement('div');
+  profilePicDiv.className = "col-sm-3 col-xs-3 sideBar-avatar";
+  profilePicIconDiv = document.createElement('div');
+  profilePicIconDiv.className = "avatar-icon";
+  profilePic = document.createElement('img');
+  profilePic.setAttribute('id', userName + "_ProfilePicture");
+  if (PhoneBook[userName]['photo'])
+    profilePic.setAttribute("src", "https://appimages.mesibo.com/" + PhoneBook[userName]['photo']);
+  else
+    profilePic.setAttribute("src", "images/profile/default-profile-icon-16.jpg ");
+
+  profileNameMainDiv = document.createElement('div');
+  profileNameMainDiv.className = "col-sm-9 col-xs-9 sideBar-main";
+  profileNameRowDiv = document.createElement('div');
+  profileNameRowDiv.className = "row";
+  profileNameBlockDiv = document.createElement('div');
+  profileNameBlockDiv.className = "col-sm-8 col-xs-8 sideBar-name";
+  profileNameSpan = document.createElement('span');
+  profileNameSpan.className = "name-meta";
+
+  var profileNameValidText = "Unknown"
+  if (userName)
+    profileNameValidText = PhoneBook[userName]['name'];
+
+  profileNameText = document.createTextNode(profileNameValidText); //Name
+  profileNameStrongText = document.createElement('strong');
+
+  profileStatusDiv = document.createElement('div');
+  profileStatusTick = document.createElement('img'); //Status Tick
+  profileStatusTick.className = "last_msg_status";
+  profileStatusTick.setAttribute('id', userName + "_LastStatus");
+  profileStatusTick.setAttribute('style', "display: none;");
+
+  profileLastMessage = document.createElement('div');
+  profileLastMessage.className = "last_msg_text";
+  profileLastMessage.setAttribute('id', userName + "_LastMsg");
+
+  profileLastDate = document.createElement('div');
+  profileLastDate.className = "col-sm-4 col-xs-4 pull-right sideBar-time";
+  profileLastDateSpan = document.createElement('span');
+  profileLastDateSpan.className = "time-meta pull-right";
+  profileLastDateSpan.setAttribute('id', userName + "_LastDate");
+
+  profileLastDate.append(profileLastDateSpan);
+  profileStatusDiv.append(profileStatusTick);
+  profileStatusDiv.append(profileLastMessage);
+  profileNameStrongText.append(profileNameText)
+  profileNameSpan.append(profileNameStrongText);
+  profileNameSpan.append(profileStatusDiv);
+  profileNameBlockDiv.append(profileNameSpan);
+  profileNameRowDiv.append(profileNameBlockDiv);
+  profileNameRowDiv.append(profileLastDate);
+  profileNameMainDiv.append(profileNameRowDiv);
+  profilePicIconDiv.append(profilePic);
+  profilePicDiv.append(profilePicIconDiv);
+  rowBodyDiv.append(profilePicDiv);
+  rowBodyDiv.append(profileNameMainDiv);
+
+  var myActivePeerList = document.getElementById("UserList");
+  myActivePeerList.appendChild(rowBodyDiv);
+
+
+}
+
+// Fetch Contacts
+async function fetchContacts(usrToken, PhoneBook) {
+  const response = await fetch('https://app.mesibo.com/api.php?op=getcontacts&token=' + usrToken);
+  const contactsData = await response.json(); //extract JSON from the http response
+
+  var personsOnly = contactsData['contacts'].filter(function(contact) {
+    return contact.gid == 0;
+  });
+
+  PhoneBook = getSyncPhoneBook(personsOnly);
+  localStorage.setItem("Mesibo_LocalPhoneBook", JSON.stringify(PhoneBook));
+
+  // Syncing with Local Contacts
+  createContactsListDisplay(Object.values(PhoneBook));
+}
+
+function displayActiveUsers(activeUserList, PhoneBook) {
+
+  for (var i = 0; i < activeUserList.length; i++) {
+    var user_name = getUserFromPhone(activeUserList[i], PhoneBook)
+    createActivePeerBlock(user_name, PhoneBook);
+    updateProfilePic(user_name + "_ProfilePicture", "https://appimages.mesibo.com/" + PhoneBook[user_name]['photo']);
+    updateLastMsg(user_name, activeUserList[i]);
+  }
+}

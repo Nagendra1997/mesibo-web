@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <title>Mesibo Web</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -45,77 +45,6 @@
           </div>
 
           <div class="row sideBar" id="UserList">
-            <div class="row sideBar-body" onclick="loadChatHistory('Nagendra Reliance Jio')" id = "Nagendra Reliance Jio">
-              <div class="col-sm-3 col-xs-3 sideBar-avatar">
-                <div class="avatar-icon">
-                  <img src="images/profile/default-profile-icon-16.jpg" id="Nagendra Reliance Jio_ProfilePicture">
-                </div>
-              </div>
-              <div class="col-sm-9 col-xs-9 sideBar-main">
-                <div class="row">
-                  <div class="col-sm-8 col-xs-8 sideBar-name">
-                    <span class="name-meta" ><strong>Nagendra Reliance Jio</strong>
-                      <div> 
-                        <img src=""  class="last_msg_status" id='Nagendra Reliance Jio_LastStatus' style="display: none;">
-                        <div class="last_msg_text"id='Nagendra Reliance Jio_LastMsg'></div>    
-                      </div> 
-                    </span>
-                  </div>
-                  <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                    <span class="time-meta pull-right" id='Nagendra Reliance Jio_LastDate'>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="row sideBar-body" onclick="loadChatHistory('Sarkar singh')" id = "Sarkar singh">
-              <div class="col-sm-3 col-xs-3 sideBar-avatar">
-                <div class="avatar-icon">
-                  <img src="images/profile/default-profile-icon-16.jpg" id="Sarkar singh_ProfilePicture">
-                </div>
-              </div>
-              <div class="col-sm-9 col-xs-9 sideBar-main">
-                <div class="row">
-                  <div class="col-sm-8 col-xs-8 sideBar-name">
-                    <span class="name-meta" ><strong>Sarkar singh</strong>
-                      <div> 
-                        <img src="" class='last_msg_status' 
-                        id='Sarkar singh_LastStatus' style="display: none;">
-                        <div class='last_msg_text' id='Sarkar singh_LastMsg'> </div>
-                      </div>
-                    </span>
-                  </div>
-                  <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                    <span class="time-meta pull-right" id='Sarkar singh_LastDate'>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row sideBar-body" onclick="loadChatHistory('Kp')" id = "Kp">
-              <div class="col-sm-3 col-xs-3 sideBar-avatar">
-                <div class="avatar-icon">
-                  <img src="images/profile/default-profile-icon-16.jpg" id="Kp_ProfilePicture">
-                </div>
-              </div>
-              <div class="col-sm-9 col-xs-9 sideBar-main">
-                <div class="row">
-                  <div class="col-sm-8 col-xs-8 sideBar-name">
-                    <span  class="name-meta"><strong>Kp</strong>
-                      <div>
-                        <img src="" class="last_msg_status" id=Kp_LastStatus style="display: none;">
-                        <div class="last_msg_text" id='Kp_LastMsg'></div>
-                      </span>
-                    </div>  
-                  </div>
-                  <div class="col-sm-4 col-xs-4 pull-right sideBar-time">
-                    <span class="time-meta pull-right" id='Kp_LastDate' >
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -142,22 +71,6 @@
           </div>
 
           <div class="row compose-sideBar" id="syncedContactsList">
-            <!-- <div class="row sideBar-body">
-              <div class="col-sm-3 col-xs-3 sideBar-avatar">
-                <div class="avatar-icon">
-                  <img src="https://bootdey.com/img/Content/avatar/avatar1.png">
-                </div>
-              </div>
-              <div class="col-sm-9 col-xs-9 sideBar-main">
-                <div class="row">
-                  <div class="col-sm-8 col-xs-8 sideBar-name">
-                    <span class="name-meta">John Doe 
-                    <p>This is my status</p>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div> -->
           </div>
         </div>
       </div>
@@ -239,66 +152,25 @@
 
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-var PhoneBook = {};
+var PhoneBook = localStorage.getItem("Mesibo_LocalPhoneBook");
 
-/////////////// Fetch Contacts
+if(!PhoneBook)
+  PhoneBook = {};
+else
+  PhoneBook = JSON.parse(PhoneBook);
+console.log(PhoneBook);
 
-// Create a request variable and assign a new XMLHttpRequest object to it.
-var request = new XMLHttpRequest()
+activeUserList = LocalStorage_GetActiveUsers();
 
-// Open a new connection, using the GET request on the URL endpoint
-request.open('GET', 'https://app.mesibo.com/api.php?op=getcontacts&token=5d3ca7a43590fe140baa16ce60ecb159b22401bebe1153bcb', false)
-
-request.onload = function() {
-  // Begin accessing JSON data here
-  var data = JSON.parse(this.response);
-  console.log(data['contacts']);
-
-  var personsOnly = data['contacts'].filter(function(contact) {
-    return contact.gid == 0;
-  });
-
-  console.log(personsOnly);
-  createContactsListDisplay(personsOnly);
-  console.log(PhoneBook);
-  PhoneBook = getSyncPhoneBook(personsOnly);
-  console.log(PhoneBook);
-
-}
-
-// Send request
-request.send();
-
-// createProfileBlock();
-
-
-////////////// Finish Syncing Contacts
+var contactSyncUsrToken = "5d3ca7a43590fe140baa16ce60ecb159b22401bebe1153bcb";
+fetchContacts(contactSyncUsrToken,PhoneBook);
+console.log(PhoneBook);
 
 var $divs = $("#UserList .row.sideBar-body");
 var selected_user = "";
 var current_selected_user_name = "";
 
-
-var active_user_list = localStorage.getItem("Mesibo_MsgUsr_Hash");
-if (active_user_list) {
-  // console.log(JSON.parse(active_user_list));
-  active_user_list = Object.values(JSON.parse(active_user_list));
-  active_user_list.unique()
-} else
-  active_user_list = ['917019882153', '917200721825', '919448967903'];
-
-active_user_list = ['917019882153', '917200721825'];
-// console.log(active_user_list);
-
-for (var i = 0; i < active_user_list.length; i++) {
-  // console.log(active_user_list[i]);
-  console.log(PhoneBook);
-  var user_name = getUserFromPhone(active_user_list[i], PhoneBook)
-  console.log(user_name);
-  updateProfilePic(user_name + "_ProfilePicture","https://appimages.mesibo.com/"+PhoneBook[user_name]['photo']);
-  updateLastMsg(user_name, active_user_list[i]);
-}
-
+displayActiveUsers(activeUserList, PhoneBook);
 updateUserListOrder(PhoneBook);
 
 
@@ -372,7 +244,6 @@ function sendMessage() {
   var p = {};
   p.peer = selected_user;
 
-  // console.log("SENDING MSG >>>>>>>>>>>>>>>", selected_user);
   if (!selected_user) return;
 
   var id = parseInt(Math.random() * 10000);
@@ -417,22 +288,33 @@ function sendMessage() {
   }
 }
 
-
-
 function loadChatHistory(selected_user_name) {
-  if (current_selected_user_name)
-    $('#' + current_selected_user_name).css({
-      "background-color": "#fff"
+  // $(".side-two").css({
+  //   "left": "0"
+  // });
+  
+  $(".side-two").css({
+      "left": "-100%"
     });
+
+  // console.log(PhoneBook);
+  console.log("===>loadChatHistory called ", selected_user_name);
+  console.log(current_selected_user_name);
+  if (current_selected_user_name)
+    document.getElementById(current_selected_user_name).style.backgroundColor =
+    "#fff";
 
   selected_user = PhoneBook[selected_user_name]['phone'];
 
+  if (!(activeUserList.includes(selected_user))) {
+    createActivePeerBlock(selected_user_name, PhoneBook);
+    activeUserList.push(selected_user);
+  }
   // console.log("Loading history for " + selected_user);
   $("#SelectedUserName").html(selected_user_name);
-  $("#SelectedUserPicture").attr('src', "https://appimages.mesibo.com/"+PhoneBook[selected_user_name]['photo']);
-  $('#' + selected_user_name).css({
-    "background-color": "#e5e5e5"
-  });
+  $("#SelectedUserPicture").attr('src', "https://appimages.mesibo.com/" + PhoneBook[selected_user_name]['photo']);
+
+  document.getElementById(selected_user_name).style.backgroundColor = "#e5e5e5";
   $('#conversation').empty();
   LocalStorage_LoadHistory(selected_user);
   updateLastMsg(selected_user_name, selected_user);
@@ -463,7 +345,6 @@ $(function() {
     });
   });
 })
-
     </script>
   </body>
   </html>
