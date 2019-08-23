@@ -122,3 +122,13 @@ function LocalStorage_GetActiveUsers() {
     activeUserList = [];
   return activeUserList;
 }
+
+function LocalStorage_GetPhoneBook() {
+  var localPhoneBook = localStorage.getItem("Mesibo_LocalPhoneBook");
+  if (!localPhoneBook)
+    localPhoneBook = {};
+  else
+    localPhoneBook = JSON.parse(localPhoneBook);
+  console.log(localPhoneBook);
+  return localPhoneBook;
+}

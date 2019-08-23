@@ -152,27 +152,18 @@
 
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-var PhoneBook = localStorage.getItem("Mesibo_LocalPhoneBook");
 
-if(!PhoneBook)
-  PhoneBook = {};
-else
-  PhoneBook = JSON.parse(PhoneBook);
-console.log(PhoneBook);
-
+//GLOBAL SCOPE
+var PhoneBook = LocalStorage_GetPhoneBook();
 var activeUserList = LocalStorage_GetActiveUsers();
-
 var contactSyncUsrToken = "5d3ca7a43590fe140baa16ce60ecb159b22401bebe1153bcb";
-fetchContacts(contactSyncUsrToken,PhoneBook);
-console.log(PhoneBook);
-
-var $divs = $("#UserList .row.sideBar-body");
+fetchContacts(contactSyncUsrToken, PhoneBook);
 var selected_user = "";
 var current_selected_user_name = "";
 
+//Init Display 
 displayActiveUsers(activeUserList, PhoneBook);
 updateUserListOrder(PhoneBook);
-
 
 function TestNotify() {}
 
@@ -195,10 +186,10 @@ TestNotify.prototype.Mesibo_OnMessageStatus = function(m) {
 }
 
 TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
-  // console.log(m);
+  console.log("===>Mesibo_OnMessage ");
+
   console.log("TestNotify.prototype.Mesibo_OnMessage: from " + m.peer);
   var string = new TextDecoder("utf-8").decode(data);
-  // console.log(string)
   msgRecievedTimeStamp = +new Date;
 
   if (m.flag == 3) {
@@ -228,7 +219,7 @@ TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
 
   }
 }
-// var accessToken = "aea59d3713701704bed9fd5952d9419ba8c4209a335e664ef2e" 
+// var accessToken = "aea59d3713701704bed9fd5952d9419ba8c4209a335e664ef2e"
 var accessToken = "4080ba6528abe3bdbef60cd497f9193199dadb6b635616e2216a80"
 // var accessToken = "8de56f624074861d60f378b0e43cad9b15b11f22859e335398b"
 
@@ -279,7 +270,6 @@ function sendMessage() {
       retrievedMsgHash = JSON.parse(retrievedMsgHash);
 
     createSentBubble(msg_payload);
-    // console.log(p, id, msgdata);
     api.sendMessage(p, id, msgdata);
     document.getElementById("comment").value = "";
     updateLastMsg(getUserFromPhone(p.peer, PhoneBook), p.peer);
@@ -289,17 +279,14 @@ function sendMessage() {
 }
 
 function loadChatHistory(selected_user_name) {
-  // $(".side-two").css({
-  //   "left": "0"
-  // });
   
+  //Hide side panel  
   $(".side-two").css({
       "left": "-100%"
     });
 
-  // console.log(PhoneBook);
   console.log("===>loadChatHistory called ", selected_user_name);
-  console.log(current_selected_user_name);
+
   if (current_selected_user_name)
     document.getElementById(current_selected_user_name).style.backgroundColor =
     "#fff";
@@ -310,7 +297,7 @@ function loadChatHistory(selected_user_name) {
     createActivePeerBlock(selected_user_name, PhoneBook);
     activeUserList.push(selected_user);
   }
-  // console.log("Loading history for " + selected_user);
+
   $("#SelectedUserName").html(selected_user_name);
   $("#SelectedUserPicture").attr('src', "https://appimages.mesibo.com/" + PhoneBook[selected_user_name]['photo']);
 
@@ -323,6 +310,7 @@ function loadChatHistory(selected_user_name) {
 
 }
 
+//Enter to send Message
 document.onkeydown = function(e) {
   e = e || window.event;
   switch (e.which || e.keyCode) {
@@ -332,6 +320,8 @@ document.onkeydown = function(e) {
   }
 
 }
+
+//Side Panel Display
 $(function() {
   $(".heading-compose").click(function() {
     $(".side-two").css({
