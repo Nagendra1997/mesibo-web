@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!--SCRIPTINCLUDESTART-->
-  <script type="text/javascript" src="https://mesibo.com/mesiboapi.js"></script> 
+  <script type="text/javascript" src="https://api.mesibo.com/mesibo.js"></script> 
   <script type="text/javascript" src="scripts/utils.js"></script>
   <script type="text/javascript" src="scripts/localstorage.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -105,6 +105,7 @@
       <div class="row message-body">
         <div class="col-sm-12 message-main-receiver">
           <div class="receiver">
+            <div> Sender Name </div>
             <div class="message-text">
              Hi, Welcome to Mesibo!
            </div>
@@ -118,6 +119,7 @@
     <div class="row message-body">
       <div class="col-sm-12 message-main-sender">
         <div class="sender">
+          <div> Reciever Name </div>
           <div class="message-text">
             Click on user to select and send a message!
           </div>
@@ -158,7 +160,7 @@ AppStorage = new Mesibo_LocalStorage();
 var PhoneBook = AppStorage.phoneBook;
 var activeUserList = AppStorage.activeUsers;
 
-var contactSyncUsrToken = "5d3ca7a43590fe140baa16ce60ecb159b22401bebe1153bcb";
+var contactSyncUsrToken = "adfef0ff9bf5d78d061ed211fb9dc8233ebdbb1e21ae0066104";
 fetchContacts(contactSyncUsrToken, PhoneBook);
 var selected_user = "";
 var current_selected_user_name = "";
@@ -174,14 +176,20 @@ TestNotify.prototype.Mesibo_OnConnectionStatus = function(status, value) {
 }
 
 TestNotify.prototype.Mesibo_OnMessageStatus = function(m) {
-
-  m.peer = AppStorage.getPeerFromId(m.id);
+  console.log(m);
+  // m.peer = AppStorage.getPeerFromId(m.id);
   console.log("TestNotify.prototype.Mesibo_OnMessageStatus: from " + m.peer + " status: " +
     m.status);
 
   AppStorage.updateItemSent(m);
   var statustick = document.getElementById(m.id);
   Mesibo_AppUtils.updateStatusTick(statustick, m.status);
+
+  if(m.status == MESIBO_MSGSTATUS_READ && selected_user == m.peer){
+    console.log(AppStorage.getMsgArrayForPeer(m.peer));
+    Mesibo_AppUtils.updateReadPrevious(AppStorage.getMsgArrayForPeer(m.peer),m.id);
+  }
+
   Mesibo_AppUtils.updateLastMsg(Mesibo_AppUtils.getUserFromPhone(m.peer, PhoneBook), m.peer);
   Mesibo_AppUtils.updateUserListOrder(PhoneBook);
 }
@@ -190,18 +198,22 @@ TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
   console.log("===>Mesibo_OnMessage ");
 
   console.log("TestNotify.prototype.Mesibo_OnMessage: from " + m.peer);
-  var string = new TextDecoder("utf-8").decode(data);
+  if(data)
+    var string = new TextDecoder("utf-8").decode(data);
   msgRecievedTimeStamp = +new Date;
 
   if (m.flag == 3) {
 
     if (selected_user == m.peer) {
+      //Send RR
+      sendReadReceipt(m.peer,m.id);
+
 
       if (!Mesibo_AppUtils.getLastTs(m.peer, PhoneBook) || (!(Mesibo_AppUtils.dateNow(Mesibo_AppUtils.getLastTs(m.peer, PhoneBook)) == Mesibo_AppUtils.dateNow(msgRecievedTimeStamp)))) {
 
         if (Mesibo_AppUtils.dateNow(msgRecievedTimeStamp) == Mesibo_AppUtils.dateNow(+new Date())) {
           Mesibo_AppUtils.createDateHeaderBlock("Today");
-        } else if (Mesibo_AppUtils.dateNow(msgRecievedTimeStamp) == Mesibo_AppUtils.dateYesterday(msgRecievedTimeStamp))
+        } else if (Mesibo_AppUtils.dateNow(msgRecievedTimeStamp) == Mesibo_Appadfef0ff9bf5d78d061ed211fb9dc8233ebdbb1e21ae0066104Utils.dateYesterday(msgRecievedTimeStamp))
           Mesibo_AppUtils.createDateHeaderBlock("Yesterday");
         else
           Mesibo_AppUtils.createDateHeaderBlock(Mesibo_AppUtils.dateNow(msgRecievedTimeStamp));
@@ -231,6 +243,12 @@ api.setAppName("dialogflowmesibo");
 api.setListener(new TestNotify());
 api.setCredentials(accessToken);
 api.start();
+
+function sendReadReceipt(pPeerId,pMsgId) {
+                var p = {};
+                p.peer = pPeerId;
+                api.sendReadReceipt(p,pMsgId);
+     }
 
 function sendMessage() {
   var p = {};
@@ -291,7 +309,8 @@ function loadChatHistory(selected_user_name) {
   if (current_selected_user_name)
     document.getElementById(current_selected_user_name).style.backgroundColor =
     "#fff";
-
+  
+  console.log(selected_user_name);
   selected_user = PhoneBook[selected_user_name]['phone'];
 
   if (!(activeUserList.includes(selected_user))) {

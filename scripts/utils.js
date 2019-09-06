@@ -194,6 +194,30 @@ class Mesibo_AppUtils {
 
   }
 
+  static updateReadPrevious(pMsgArray,pMsgId){
+    console.log("===>utils:updateReadPrevious called ");
+    var MsgIdPos = -1;
+    for(var i=pMsgArray.length - 1;i>=0;i--){
+      if(pMsgArray[i]['id'] == pMsgId){
+        MsgIdPos = i;
+        break;
+      }
+    }
+
+    if(MsgIdPos == -1){
+      console.log("Error:utils:updateReadPrevious:MsgId not found in array of sent Messages");
+      return -1;
+    }
+
+    //Update read receipt for all previously delievered messages
+    //TBD: Maybe have a lastMsgRead pos in ls,to make iterate faster and stop it there
+    for(var i=MsgIdPos-1;i>=0; i--){
+      if(pMsgArray[i]['status'] == MESIBO_MSGSTATUS_DELIVERED)
+        this.updateStatusTick(document.getElementById(pMsgArray[i]['id']),MESIBO_MSGSTATUS_READ);
+    }
+
+  }
+
   static updateScroll() {
     var objDiv = document.getElementById("conversation");
     objDiv.scrollTop = objDiv.scrollHeight;

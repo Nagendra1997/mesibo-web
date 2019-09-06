@@ -24,6 +24,14 @@ class Mesibo_LocalStorage {
     return localPhoneBook;
   }
 
+  getMsgArrayForPeer(pPeerId){
+    var peerMsgArray = localStorage.getItem(pPeerId);
+    if(peerMsgArray)
+      return JSON.parse(peerMsgArray);
+    else
+      return [];
+  }
+
   getPeerFromId(msgId) {
     var retrievedMsgHash = localStorage.getItem("Mesibo_MsgUsr_Hash");
     if (retrievedMsgHash)
@@ -39,7 +47,7 @@ class Mesibo_LocalStorage {
   loadHistory(selected_user) {
     console.log("===>LocalStorage_LoadHistory called")
 
-    msg_history = JSON.parse(localStorage.getItem(selected_user));
+    var msg_history = JSON.parse(localStorage.getItem(selected_user));
 
     if (msg_history) {
       var msg_hist_data = Object.keys(msg_history).map(function(key) {
@@ -70,10 +78,28 @@ class Mesibo_LocalStorage {
     var jsonMsgArray = JSON.parse(retrievedMsgArray);
     // console.log(jsonMsgArray);
 
+    var msgIdPos = -1;
+
     for (var i = jsonMsgArray.length - 1; i >= 0; i--) {
       if (jsonMsgArray[i]['id'] == m.id) {
         jsonMsgArray[i]['params'] = m;
         jsonMsgArray[i]['status'] = m.status;
+        msgIdPos = i ;
+        break;
+      }
+    }
+
+    if(msgIdPos == -1){
+      console.log("Error:localstorage.js:updateItemSent: Message ID not found");
+    }
+
+    //If status for this message is read , update read status for all
+    //previous messages in storage
+
+    if(m.status == MESIBO_MSGSTATUS_READ){
+      for(var i = msgIdPos ; i >= 0; i--){
+        if(jsonMsgArray[i]['status'] == MESIBO_MSGSTATUS_DELIVERED)
+          jsonMsgArray[i]['status'] == MESIBO_MSGSTATUS_DELIVERED;
       }
     }
 
