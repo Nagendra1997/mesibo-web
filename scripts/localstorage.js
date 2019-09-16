@@ -5,12 +5,15 @@ class Mesibo_LocalStorage {
   get activeUsers() {
     console.log("===>LocalStorage_GetActiveUsers called");
     var activeUserList = localStorage.getItem("Mesibo_MsgUsr_Hash");
+    console.log(activeUserList);
     if (activeUserList) {
       activeUserList = Object.values(JSON.parse(activeUserList));
-      activeUserList = activeUserList.unique()
-    } else
-
+      activeUserList = activeUserList.filter(onlyUnique); 
+    } 
+    else
       activeUserList = [];
+
+    console.log(activeUserList);
     return activeUserList;
   }
 
@@ -177,5 +180,9 @@ class Mesibo_LocalStorage {
 
   }
 
+}
+
+  function onlyUnique(value, index, self) { 
+    return self.indexOf(value) === index;
 }
 
