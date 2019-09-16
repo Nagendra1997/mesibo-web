@@ -24,6 +24,9 @@ const MESIBO_MSGSTATUS_INVALIDDEST = 0x83
 const MESIBO_MSGSTATUS_EXPIRED = 0x84
 const MESIBO_MSGSTATUS_BLOCKED = 0x88
 
+const MESIBO_MSG_ORIGIN_SENT = 0
+const MESIBO_MSG_ORIGIN_RECIEVED = 3 
+
 class Mesibo_AppUtils {
 
   static timeNow() {
@@ -105,6 +108,43 @@ class Mesibo_AppUtils {
     textDiv.append(msgcontent);
     timeSpan.append(timecontent);
     timeSpan.append(statusTick);
+    senderDiv.append(textDiv);
+    senderDiv.append(timeSpan);
+    topSenderDiv.appendChild(senderDiv);
+    msgBodyDiv.appendChild(topSenderDiv);
+
+    var mylist = document.getElementById("conversation");
+    mylist.appendChild(msgBodyDiv);
+
+  }
+
+    static createImageSentBubble(msg_data) {
+
+    var msgBodyDiv = document.createElement('div');
+    msgBodyDiv.className = "row message-body";
+    var topSenderDiv = document.createElement('div');
+    topSenderDiv.className = 'col-sm-12 message-main-sender'; //top sender-div-class
+    var senderDiv = document.createElement('div');
+    senderDiv.className = 'sender';
+    var imgDiv = document.createElement('img');
+    imgDiv.setAttribute('src',msg_data['file']);
+    var textDiv = document.createElement('div');
+    textDiv.className = 'message-text';
+    var timeSpan = document.createElement('span');
+    timeSpan.className = 'message-time pull-right';
+
+    var statusTick = document.createElement('img');
+    statusTick.className = 'status_msg_img';
+    Mesibo_AppUtils.updateStatusTick(statusTick, msg_data['status']);
+    statusTick.setAttribute("id", msg_data['id']);
+
+    var msgcontent = document.createTextNode(msg_data['data']);
+    var timecontent = document.createTextNode(Mesibo_AppUtils.timeFromTs(msg_data['ts']));
+
+    textDiv.append(msgcontent);
+    timeSpan.append(timecontent);
+    timeSpan.append(statusTick);
+    senderDiv.append(imgDiv);
     senderDiv.append(textDiv);
     senderDiv.append(timeSpan);
     topSenderDiv.appendChild(senderDiv);
@@ -211,9 +251,14 @@ class Mesibo_AppUtils {
 
     //Update read receipt for all previously delievered messages
     //TBD: Maybe have a lastMsgRead pos in ls,to make iterate faster and stop it there
+    
+    console.log(pMsgArray);
+
     for(var i=MsgIdPos-1;i>=0; i--){
-      if(pMsgArray[i]['status'] == MESIBO_MSGSTATUS_DELIVERED)
-        this.updateStatusTick(document.getElementById(pMsgArray[i]['id']),MESIBO_MSGSTATUS_READ);
+      if(pMsgArray[i]['status'] == MESIBO_MSGSTATUS_DELIVERED|MESIBO_MSGSTATUS_READ){
+        pMsgArray[i]['data'];
+        Mesibo_AppUtils.updateStatusTick(document.getElementById(pMsgArray[i]['id']),MESIBO_MSGSTATUS_READ);
+      }
     }
 
   }
@@ -295,7 +340,7 @@ class Mesibo_AppUtils {
 
 
   static createContactsListDisplay(contactsArray) {
-    console.log("===>Mesibo_AppUtils.createContactsListDisplay called ");
+    console.log("===>utils:createContactsListDisplay called ");
     console.log(contactsArray);
     if (contactsArray) {
       for (var i = 0; i < contactsArray.length; i++)
@@ -321,7 +366,7 @@ class Mesibo_AppUtils {
         "phone": "919449114208"
       },
       "919113203545": {
-        "name": "Yusuf Motiwala",
+        "name": "Test YM",
         "phone": "919113203545"
       },
     };
@@ -342,7 +387,7 @@ class Mesibo_AppUtils {
   }
 
   static createProfileBlock(profileDetails) {
-    // console.log("===> Mesibo_AppUtils.createProfileBlock called ");
+    // console.log("===> utils:createProfileBlock called ");
     var rowBodyDiv = document.createElement('div');
     rowBodyDiv.className = "row sideBar-body";
     rowBodyDiv.onclick = function() {
@@ -398,7 +443,7 @@ class Mesibo_AppUtils {
   }
 
   static createActivePeerBlock(userName, PhoneBook) {
-    console.log("===>Mesibo_AppUtils.createActivePeerBlock called for", userName);
+    console.log("===>utils:createActivePeerBlock called for", userName);
 
     var rowBodyDiv = document.createElement('div');
     rowBodyDiv.className = "row sideBar-body";
@@ -473,7 +518,7 @@ class Mesibo_AppUtils {
 
 
   static displayActiveUsers(activeUserList, PhoneBook) {
-    console.log("===>Mesibo_AppUtils.displayActiveUsers called");
+    console.log("===>utils:displayActiveUsers called");
 
     for (var i = 0; i < activeUserList.length; i++) {
       var user_name = Mesibo_AppUtils.getUserFromPhone(activeUserList[i], PhoneBook)
@@ -487,7 +532,8 @@ class Mesibo_AppUtils {
 
 
 // Fetch Contacts
-async function fetchContacts(usrToken, PhoneBook) {
+async function fetchContacts(usrToken) {
+
   const response =
     await fetch('https://app.mesibo.com/api.php?op=getcontacts&token=' + usrToken);
 
@@ -499,25 +545,59 @@ async function fetchContacts(usrToken, PhoneBook) {
     return contact.gid == 0;
   });
 
-  PhoneBook = Mesibo_AppUtils.getSyncPhoneBook(personsOnly);
+  var PhoneBook = Mesibo_AppUtils.getSyncPhoneBook(personsOnly);
   localStorage.setItem("Mesibo_LocalPhoneBook", JSON.stringify(PhoneBook));
 
   // Syncing with Local Contacts
   Mesibo_AppUtils.createContactsListDisplay(Object.values(PhoneBook));
 }
 
+async function uploadAndSendFile(msg_payload) {
+  
+  const fileInput = document.querySelector('#imgupload');
+  const formData = new FormData();
+
+  console.log(fileInput,fileInput.files[0])
+
+
+  formData.append('file', fileInput.files[0]);
+
+  const options = {
+    method: 'POST',
+    body: formData,
+
+      // If you add this, upload won't work
+  // headers: {
+  //   'Content-Type': 'multipart/form-data',
+  // }
+
+  };
+
+  const response = await fetch('https://s3.mesibo.com/api.php?op=upload&token=9f079c04b6bdb9d7253be331240f2d33780e97bbe4387e8e557933c', options);
+  console.log(response);
+  const image_url = await response.json();
+  console.log(image_url['file'])
+
+  msg_payload['file'] = image_url['file'] ;
+  Mesibo_AppUtils.createImageSentBubble(msg_payload);
+  sendFiletoPeer( msg_payload['peer'],msg_payload['id'],image_url['file']);
+
+}
+
+
+
 Array.prototype.contains = function(v) {
-  for (var i = 0; i < this.length; i++) {
-    if (this[i] === v) return true;
+  for (var i = 0; i < Mesibo_AppUtils.length; i++) {
+    if (Mesibo_AppUtils[i] === v) return true;
   }
   return false;
 };
 
 Array.prototype.unique = function() {
   var arr = [];
-  for (var i = 0; i < this.length; i++) {
-    if (!arr.contains(this[i])) {
-      arr.push(this[i]);
+  for (var i = 0; i < Mesibo_AppUtils.length; i++) {
+    if (!arr.contains(Mesibo_AppUtils[i])) {
+      arr.push(Mesibo_AppUtils[i]);
     }
   }
   return arr;

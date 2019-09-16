@@ -32,6 +32,7 @@ class Mesibo_LocalStorage {
       return [];
   }
 
+
   getPeerFromId(msgId) {
     var retrievedMsgHash = localStorage.getItem("Mesibo_MsgUsr_Hash");
     if (retrievedMsgHash)
@@ -42,6 +43,17 @@ class Mesibo_LocalStorage {
     }
 
     return retrievedMsgHash[msgId];
+  }
+
+  getLastReceived(pPeerId){
+    var jsonMsgArray = this.getMsgArrayForPeer(pPeerId);
+    if(jsonMsgArray){
+      for(var i=jsonMsgArray.length-1;i>=0;i--){
+        if(jsonMsgArray[i]['origin']== MESIBO_MSG_ORIGIN_RECIEVED)
+          return jsonMsgArray[i]['id'];
+      }
+    }
+    return 0;
   }
 
   loadHistory(selected_user) {
@@ -97,13 +109,21 @@ class Mesibo_LocalStorage {
     //previous messages in storage
 
     if(m.status == MESIBO_MSGSTATUS_READ){
+
       for(var i = msgIdPos ; i >= 0; i--){
-        if(jsonMsgArray[i]['status'] == MESIBO_MSGSTATUS_DELIVERED)
-          jsonMsgArray[i]['status'] == MESIBO_MSGSTATUS_DELIVERED;
+        console.log(jsonMsgArray[i]['data']);
+        if(jsonMsgArray[i]['status'] == MESIBO_MSGSTATUS_DELIVERED){
+          jsonMsgArray[i]['status'] = MESIBO_MSGSTATUS_READ;
+          jsonMsgArray[i]['params']['status'] = MESIBO_MSGSTATUS_READ;
+        }
       }
     }
 
+    console.log("After updateItemSent",jsonMsgArray);
+
     localStorage.setItem(m.peer, JSON.stringify(jsonMsgArray));
+
+    console.log("After updateItemSent localstorage",JSON.parse(localStorage.getItem(m.peer)));
 
   }
 
@@ -122,7 +142,8 @@ class Mesibo_LocalStorage {
       'data': string,
       'groupid': 0,
       'ts': +new Date,
-      'flag': m.flag
+      'flag': m.flag,
+      'origin':MESIBO_MSG_ORIGIN_RECIEVED
     });
     localStorage.setItem(m.peer, JSON.stringify(jsonMsgArray));
   }

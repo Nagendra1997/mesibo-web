@@ -105,7 +105,8 @@
       <div class="row message-body">
         <div class="col-sm-12 message-main-receiver">
           <div class="receiver">
-            <div> Sender Name </div>
+            <div class="col-sm-8 col-xs-7 heading-name" style="padding-left: 5%" ><a>Receiver Name </a></div>
+            
             <div class="message-text">
              Hi, Welcome to Mesibo!
            </div>
@@ -119,7 +120,8 @@
     <div class="row message-body">
       <div class="col-sm-12 message-main-sender">
         <div class="sender">
-          <div> Reciever Name </div>
+          <div class="col-sm-8 col-xs-7 heading-name" style="padding-left: 2%"> <a>Sender Name</a> </div>
+          <img src='https://cdn.pixabay.com/photo/2019/08/02/09/39/mugunghwa-4379251_1280.jpg'>
           <div class="message-text">
             Click on user to select and send a message!
           </div>
@@ -139,12 +141,26 @@
     <div class="col-sm-9 col-xs-9 reply-main">
       <textarea class="textarea" rows="1" id="comment" placeholder="Type.."></textarea>
     </div>
+
     <div class="col-sm-1 col-xs-1 reply-recording">
-      <i class="fa fa-microphone fa-2x" aria-hidden="true"></i>
+      <form id="file_upload_form" method="post" enctype="multipart/form-data" action="https://s3.mesibo.com/api.php?op=upload&token=9f079c04b6bdb9d7253be331240f2d33780e97bbe4387e8e557933c" >
+
+      <input name="file" id="imgupload" size="27" type="file" style="display:none" />
+      <input type="submit" id ="submitimage" name="action" value="Upload Image" style="display:none" />
+      <i id="OpenImgUpload" class="fa fa-picture-o fa-2x" aria-hidden="true"></i>
+      </form>
     </div>
+
+    <!-- <div class="col-sm-1 col-xs-1 reply-send">
+      <i class="fa fa-send fa-2x" aria-hidden="true" id='button_send_file'></i>
+    </div> -->
+
     <div class="col-sm-1 col-xs-1 reply-send">
-      <i class="fa fa-send fa-2x" aria-hidden="true" onclick="sendMessage()" id='alphBnt'></i>
+      <i class="fa fa-send fa-2x" aria-hidden="true" onclick="onClickSendFile()" id='alphBnt'></i>
     </div>
+
+
+
   </div>
 </div>
 </div>
@@ -160,8 +176,15 @@ AppStorage = new Mesibo_LocalStorage();
 var PhoneBook = AppStorage.phoneBook;
 var activeUserList = AppStorage.activeUsers;
 
-var contactSyncUsrToken = "adfef0ff9bf5d78d061ed211fb9dc8233ebdbb1e21ae0066104";
-fetchContacts(contactSyncUsrToken, PhoneBook);
+var contactSyncUsrToken = "9f079c04b6bdb9d7253be331240f2d33780e97bbe4387e8e557933c";
+fetchContacts(contactSyncUsrToken);
+
+while (1){
+PhoneBook = AppStorage.phoneBook;
+console.log(PhoneBook);
+if(PhoneBook.length!=0) break;
+}
+
 var selected_user = "";
 var current_selected_user_name = "";
 
@@ -186,7 +209,6 @@ TestNotify.prototype.Mesibo_OnMessageStatus = function(m) {
   Mesibo_AppUtils.updateStatusTick(statustick, m.status);
 
   if(m.status == MESIBO_MSGSTATUS_READ && selected_user == m.peer){
-    console.log(AppStorage.getMsgArrayForPeer(m.peer));
     Mesibo_AppUtils.updateReadPrevious(AppStorage.getMsgArrayForPeer(m.peer),m.id);
   }
 
@@ -244,34 +266,37 @@ api.setListener(new TestNotify());
 api.setCredentials(accessToken);
 api.start();
 
-function sendReadReceipt(pPeerId,pMsgId) {
-                var p = {};
-                p.peer = pPeerId;
-                api.sendReadReceipt(p,pMsgId);
-     }
+function sendFiletoPeer(pPeerId,pMsgId,fileURL){
+  var p={};
+  p.peer = pPeerId;
+  var msg = {};
+  msg.type = 1;
+  msg.size = 1023;
+  msg.url = fileURL;
+  msg.title = "Test Image";
+  msg.message = " Test image JS";
+  console.log(api);
+  api.sendFile(p,pMsgId,msg);
 
-function sendMessage() {
+}
+
+function onClickSendFile() {
   var p = {};
   p.peer = selected_user;
 
   if (!selected_user) return;
 
-  var id = parseInt(Math.random() * 10000);
-  var msgdata = "Hello from Mesibo Javascript API!";
-
-  msgdata = document.getElementById("comment").value;
-
-  if (msgdata) {
-
+  id = api.random()
     msg_payload = {
-      'id': id,
+      'id': api.random(),
       'peer': p.peer,
       'params': p,
-      'data': msgdata,
+      'data': "<image>",
       'groupid': 0,
       'ts': +new Date,
       'flag': 0,
-      'status': MESIBO_MSGSTATUS_OUTBOX
+      'status': MESIBO_MSGSTATUS_OUTBOX,
+      'origin': MESIBO_MSG_ORIGIN_SENT  // TBD
     };
 
     if (!Mesibo_AppUtils.getLastTs(p.peer, PhoneBook) || (!(Mesibo_AppUtils.dateNow(Mesibo_AppUtils.getLastTs(p.peer, PhoneBook)) == Mesibo_AppUtils.dateNow(msg_payload['ts'])))) {
@@ -288,6 +313,51 @@ function sendMessage() {
     if (retrievedMsgHash)
       retrievedMsgHash = JSON.parse(retrievedMsgHash);
 
+
+    uploadAndSendFile(msg_payload);
+
+    Mesibo_AppUtils.updateLastMsg(Mesibo_AppUtils.getUserFromPhone(p.peer, PhoneBook), p.peer);
+    Mesibo_AppUtils.updateScroll();
+    Mesibo_AppUtils.updateUserListOrder(PhoneBook);
+  }
+
+
+
+function sendReadReceipt(pPeerId,pMsgId) {
+                var p = {};
+                p.peer = pPeerId;
+                api.sendReadReceipt(p,pMsgId);
+     }
+
+function sendMessage() {
+  var p = {};
+  p.peer = selected_user;
+  if (!selected_user) return;
+  var id = parseInt(Math.random() * 10000);
+  var msgdata = "Hello from Mesibo Javascript API!";
+  msgdata = document.getElementById("comment").value;
+  if (msgdata) {
+    msg_payload = {
+      'id': id,
+      'peer': p.peer,
+      'params': p,
+      'data': msgdata,
+      'groupid': 0,
+      'ts': +new Date,
+      'flag': 0,
+      'status': MESIBO_MSGSTATUS_OUTBOX
+    };
+    if (!Mesibo_AppUtils.getLastTs(p.peer, PhoneBook) || (!(Mesibo_AppUtils.dateNow(Mesibo_AppUtils.getLastTs(p.peer, PhoneBook)) == Mesibo_AppUtils.dateNow(msg_payload['ts'])))) {
+      if (Mesibo_AppUtils.dateNow(msg_payload['ts']) == Mesibo_AppUtils.dateNow(+new Date()))
+        Mesibo_AppUtils.createDateHeaderBlock("Today");
+      else
+        Mesibo_AppUtils.createDateHeaderBlock(Mesibo_AppUtils.dateNow(msg_payload['ts']));
+    }
+    AppStorage.newItemSent(id, p.peer, msg_payload);
+    AppStorage.msgPeerHash(id, p.peer);
+    var retrievedMsgHash = localStorage.getItem("Mesibo_MsgUsr_Hash");
+    if (retrievedMsgHash)
+      retrievedMsgHash = JSON.parse(retrievedMsgHash);
     Mesibo_AppUtils.createSentBubble(msg_payload);
     api.sendMessage(p, id, msgdata);
     document.getElementById("comment").value = "";
@@ -310,7 +380,7 @@ function loadChatHistory(selected_user_name) {
     document.getElementById(current_selected_user_name).style.backgroundColor =
     "#fff";
   
-  console.log(selected_user_name);
+  console.log(selected_user_name,PhoneBook);
   selected_user = PhoneBook[selected_user_name]['phone'];
 
   if (!(activeUserList.includes(selected_user))) {
@@ -325,6 +395,12 @@ function loadChatHistory(selected_user_name) {
   $('#conversation').empty();
   AppStorage.loadHistory(selected_user);
   Mesibo_AppUtils.updateLastMsg(selected_user_name, selected_user);
+
+  var lastReceivedMsgId = 0;
+  lastReceivedMsgId = AppStorage.getLastReceived(selected_user);
+  if(lastReceivedMsgId) //If there is at least one recieved message
+    sendReadReceipt(selected_user,lastReceivedMsgId);
+
   current_selected_user_name = selected_user_name;
   Mesibo_AppUtils.updateScroll();
 
@@ -357,6 +433,12 @@ $(function() {
   });
 })
 
+$('#OpenImgUpload').click(function(){ $('#imgupload').trigger('click'); });
+
+// $('#button_send_file').click(function(){
+//   uploadFile();
+//  $('#submitimage').trigger('click'); 
+// });
 
     </script>
   </body>
