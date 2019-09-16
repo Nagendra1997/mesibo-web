@@ -170,6 +170,8 @@
 
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
+const MESIBO_FLAG_DELIVERYRECEIPT = 0x1
+const MESIBO_FLAG_READRECEIPT     = 0x2
 
 //GLOBAL SCOPE
 AppStorage = new Mesibo_LocalStorage();
@@ -179,18 +181,20 @@ var activeUserList = AppStorage.activeUsers;
 var contactSyncUsrToken = "9f079c04b6bdb9d7253be331240f2d33780e97bbe4387e8e557933c";
 fetchContacts(contactSyncUsrToken);
 
-while (1){
-PhoneBook = AppStorage.phoneBook;
-console.log(PhoneBook);
-if(PhoneBook.length!=0) break;
-}
 
 var selected_user = "";
 var current_selected_user_name = "";
 
+function InitDisplay(){
 //Init Display 
+PhoneBook = AppStorage.phoneBook;
+console.log(PhoneBook);
+if(PhoneBook.length!=0)
+  console.log("Error:Main:PhoneBook Not loaded");
+  
 Mesibo_AppUtils.displayActiveUsers(activeUserList, PhoneBook);
 Mesibo_AppUtils.updateUserListOrder(PhoneBook);
+}
 
 function TestNotify() {}
 
@@ -269,13 +273,15 @@ api.start();
 function sendFiletoPeer(pPeerId,pMsgId,fileURL){
   var p={};
   p.peer = pPeerId;
+  p.flag = MESIBO_FLAG_DELIVERYRECEIPT | MESIBO_FLAG_READRECEIPT;
   var msg = {};
   msg.type = 1;
   msg.size = 1023;
   msg.url = fileURL;
   msg.title = "Test Image";
   msg.message = " Test image JS";
-  console.log(api);
+  console.log(p)
+
   api.sendFile(p,pMsgId,msg);
 
 }

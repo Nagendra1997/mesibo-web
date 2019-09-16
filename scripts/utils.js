@@ -548,6 +548,8 @@ async function fetchContacts(usrToken) {
   var PhoneBook = Mesibo_AppUtils.getSyncPhoneBook(personsOnly);
   localStorage.setItem("Mesibo_LocalPhoneBook", JSON.stringify(PhoneBook));
 
+  InitDisplay();
+
   // Syncing with Local Contacts
   Mesibo_AppUtils.createContactsListDisplay(Object.values(PhoneBook));
 }
