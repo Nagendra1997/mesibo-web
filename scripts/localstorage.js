@@ -95,6 +95,8 @@ class Mesibo_LocalStorage {
 
     var msgIdPos = -1;
 
+    console.log(jsonMsgArray,m.id);
+    
     for (var i = jsonMsgArray.length - 1; i >= 0; i--) {
       if (jsonMsgArray[i]['id'] == m.id) {
         jsonMsgArray[i]['params'] = m;

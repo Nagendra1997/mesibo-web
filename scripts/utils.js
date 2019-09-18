@@ -83,6 +83,39 @@ class Mesibo_AppUtils {
     mylist.appendChild(msgBodyDiv);
 
   }
+	
+  static createImageRecievedBubble(msg_data) {
+
+    var msgBodyDiv = document.createElement('div');
+    msgBodyDiv.className = "row message-body";
+    var topReceiverDiv = document.createElement('div');
+    topReceiverDiv.className = 'col-sm-12 message-main-receiver'; //top sender-div-class
+    var receiverDiv = document.createElement('div');
+    receiverDiv.className = 'receiver';
+    var imgDiv = document.createElement('img');
+    imgDiv.setAttribute('src',msg_data['fileurl']);
+    var textDiv = document.createElement('div');
+    textDiv.className = 'message-text';
+    var timeSpan = document.createElement('span');
+    timeSpan.className = 'message-time pull-right';
+
+    var msgcontent = document.createTextNode(msg_data['data']);
+    var timecontent = document.createTextNode(Mesibo_AppUtils.timeFromTs(msg_data['ts']));
+
+    textDiv.append(msgcontent);
+    timeSpan.append(timecontent);
+    receiverDiv.append(imgDiv);
+    receiverDiv.append(textDiv);
+    receiverDiv.append(timeSpan);
+    topReceiverDiv.appendChild(receiverDiv);
+    msgBodyDiv.appendChild(topReceiverDiv);
+
+    var mylist = document.getElementById("conversation");
+    mylist.appendChild(msgBodyDiv);
+
+  }
+
+
 
   static createSentBubble(msg_data) {
 
@@ -117,6 +150,7 @@ class Mesibo_AppUtils {
     mylist.appendChild(msgBodyDiv);
 
   }
+    
 
     static createImageSentBubble(msg_data) {
 
@@ -555,11 +589,14 @@ async function fetchContacts(usrToken) {
 }
 
 async function uploadAndSendFile(msg_payload) {
+  console.log("===> uploadAndSendFile called");
+  $('#imagePreviewHolder').hide();
   
   const fileInput = document.querySelector('#imgupload');
   const formData = new FormData();
 
-  console.log(fileInput,fileInput.files[0])
+  console.log(fileInput);
+  console.log(fileInput.files[0]);
 
 
   formData.append('file', fileInput.files[0]);
@@ -575,12 +612,12 @@ async function uploadAndSendFile(msg_payload) {
 
   };
 
-  const response = await fetch('https://s3.mesibo.com/api.php?op=upload&token=9f079c04b6bdb9d7253be331240f2d33780e97bbe4387e8e557933c', options);
+  const response = await fetch('https://s3.mesibo.com/api.php?op=upload&token=3e7694e19d192588a4ffcb4eab26b6afb3d5aada54bbd41edd71400', options);
   console.log(response);
   const image_url = await response.json();
   console.log(image_url['file'])
 
-  msg_payload['file'] = image_url['file'] ;
+  msg_payload['file'] = image_url['file'];
   Mesibo_AppUtils.createImageSentBubble(msg_payload);
   sendFiletoPeer( msg_payload['peer'],msg_payload['id'],image_url['file']);
 

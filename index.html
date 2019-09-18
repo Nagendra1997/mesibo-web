@@ -14,12 +14,16 @@
 
   <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
   <link href="styles/chatdesign.css" rel="stylesheet">
+  <link href="styles/component.css" rel="stylesheet">
 </head>
 <body>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
   <div class="container app">
+
     <div class="row app-one">
       <div class="col-sm-4 side">
+
         <div class="side-one">
           <div class="row heading">
             <div class="col-sm-3 col-xs-3 heading-avatar">
@@ -48,7 +52,10 @@
           </div>
         </div>
 
+
+
         <div class="side-two">
+
 
           <div class="row newMessage-heading">
             <div class="row newMessage-main">
@@ -76,6 +83,17 @@
       </div>
 
       <div class="col-sm-8 conversation">
+
+        <div id="imagePreviewHolder" class="og-expander" style="transition: height 350ms ease 0s; height: 500px; display: none; ">
+           <div class="og-expander-inner">
+            <span id="closePreviewButton" class="og-close"></span>
+            <div class="og-fullimg" >
+             <div class="og-loading" style="display: none;"></div>
+             <img id ="imagePreview"src="" style="display: block;">
+              </div>
+            </div>
+          </div>
+
         <div class="row heading">
           <div class="col-sm-2 col-md-1 col-xs-3 heading-avatar">
             <div class="heading-avatar-icon">
@@ -117,11 +135,21 @@
       </div>
     </div>
 
+  
+
+    <!-- https://files.mesibo.com//1//804//14763-2d6cbc606ca8f5d6.jpg/ -->
+
+<!--     <div class = side-bottom >
+      <img src="https://files.mesibo.com//1//804//14763-2d6cbc606ca8f5d6.jpg/crop/400">
+    </div> -->
+
+    <!-- <img id="image-holder" alt=""> -->
+
     <div class="row message-body">
       <div class="col-sm-12 message-main-sender">
         <div class="sender">
           <div class="col-sm-8 col-xs-7 heading-name" style="padding-left: 2%"> <a>Sender Name</a> </div>
-          <img src='https://cdn.pixabay.com/photo/2019/08/02/09/39/mugunghwa-4379251_1280.jpg'>
+          <!-- <img src='https://cdn.pixabay.com/photo/2019/08/02/09/39/mugunghwa-4379251_1280.jpg'> -->
           <div class="message-text">
             Click on user to select and send a message!
           </div>
@@ -170,15 +198,16 @@
 
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
-const MESIBO_FLAG_DELIVERYRECEIPT = 0x1
-const MESIBO_FLAG_READRECEIPT     = 0x2
+
+const MESIBO_FLAG_DELIVERYRECEIPT = 1
+const MESIBO_FLAG_READRECEIPT     = 2
 
 //GLOBAL SCOPE
 AppStorage = new Mesibo_LocalStorage();
 var PhoneBook ;
 var activeUserList ;
 
-var contactSyncUsrToken = "9f079c04b6bdb9d7253be331240f2d33780e97bbe4387e8e557933c";
+var contactSyncUsrToken = "c849c422841878a0bd1b53d64289954254acbd52dec86ebb7cb84"
 fetchContacts(contactSyncUsrToken);
 
 
@@ -189,6 +218,10 @@ function InitDisplay(){
 //Init Display 
 PhoneBook = AppStorage.phoneBook;
 console.log(PhoneBook);
+
+	//For chat bot
+	
+
 if(PhoneBook.length==0)
   console.log("Error:Main:PhoneBook Not loaded or No contacts");
 activeUserList = AppStorage.activeUsers
@@ -224,13 +257,13 @@ TestNotify.prototype.Mesibo_OnMessageStatus = function(m) {
 
 TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
   console.log("===>Mesibo_OnMessage ");
-
+  console.log(m,data);
   console.log("TestNotify.prototype.Mesibo_OnMessage: from " + m.peer);
   if(data)
     var string = new TextDecoder("utf-8").decode(data);
   msgRecievedTimeStamp = +new Date;
 
-  if (m.flag == 3) {
+  if (!m.presence) { // Not activity but actual message
 
     if (selected_user == m.peer) {
       //Send RR
@@ -246,7 +279,15 @@ TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
         else
           Mesibo_AppUtils.createDateHeaderBlock(Mesibo_AppUtils.dateNow(msgRecievedTimeStamp));
       }
-      Mesibo_AppUtils.createRecievedBubble({
+
+      if(m.filetype)
+        Mesibo_AppUtils.createImageRecievedBubble({
+          'fileurl':m.fileurl,
+          'ts': msgRecievedTimeStamp,
+          'data': string
+        })
+      else
+        Mesibo_AppUtils.createRecievedBubble({
         'data': string,
         'ts': msgRecievedTimeStamp
       });
@@ -260,9 +301,8 @@ TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
 
   }
 }
-// var accessToken = "aea59d3713701704bed9fd5952d9419ba8c4209a335e664ef2e"
+
 var accessToken = "4080ba6528abe3bdbef60cd497f9193199dadb6b635616e2216a80"
-// var accessToken = "8de56f624074861d60f378b0e43cad9b15b11f22859e335398b"
 
 var api = new Mesibo();
 api.setAppName("dialogflowmesibo");
@@ -274,17 +314,19 @@ api.start();
 
 function sendFiletoPeer(pPeerId,pMsgId,fileURL){
   var p={};
-  p.peer = pPeerId;
+  p.peer = pPeerId; 
   p.flag = MESIBO_FLAG_DELIVERYRECEIPT | MESIBO_FLAG_READRECEIPT;
-  p.expiry = 3600;
+
   var msg = {};
   msg.type = 1;
   msg.size = 1023;
   msg.url = fileURL;
+  console.log(msg.url)
   msg.title = "Test Image";
   msg.message = " Test image JS";
   console.log(p)
-
+  
+  console.log(msg)
   api.sendFile(p,pMsgId,msg);
 
 }
@@ -442,7 +484,41 @@ $(function() {
   });
 })
 
-$('#OpenImgUpload').click(function(){ $('#imgupload').trigger('click'); });
+$('#OpenImgUpload').click(function() {
+
+  $('#imgupload').trigger('click');
+  console.log("whatimageupload");
+
+
+});
+
+function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    
+    reader.onload = function(e) {
+      $('#imagePreview').attr('src', e.target.result);
+    }
+    
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+
+
+$('#imgupload').change(function (){
+ 
+  readURL(this);
+  $('#imagePreviewHolder').show();
+});
+
+
+$('#closePreviewButton').click(function() {
+  console.log("Close Preview ");
+  $('#imagePreview').attr('src', "");
+  $('#imagePreviewHolder').hide();
+  return false;
+});
 
 // $('#button_send_file').click(function(){
 //   uploadFile();

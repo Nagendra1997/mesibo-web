@@ -67,6 +67,13 @@
 
   }
 
+    .side-bottom {
+    z-index: 1000;
+    position: absolute;
+    height: 50%;
+    width: 50%;
+
+  }
 
   .heading {
     padding: 10px 16px 10px 15px;
@@ -638,4 +645,13 @@
 .last_msg_text{
   display: inline;
 
+}
+
+#image-holder {
+  width: 500px;
+  height: auto;
+  position: center;
+  left: 300px;
+  top: 300px; /* Or perhaps different coordinates */
+  display: none;
 }
