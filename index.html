@@ -85,38 +85,36 @@
       <div class="col-sm-8 conversation">
 
         <div id="imagePreviewHolder" class="og-expander" style="transition: height 350ms ease 0s; height: 500px; display: none; ">
-           <div class="og-expander-inner">
-            <span id="closePreviewButton" class="og-close"></span>
-            <div class="og-fullimg" >
-             <div class="og-loading" style="display: none;"></div>
-             <img id ="imagePreview"src="" style="display: block;">
-              </div>
-            </div>
-          </div>
+         <div class="og-expander-inner">
+          <span id="closePreviewButton" class="og-close"></span>
+          <div class="og-fullimg" >
+           <div class="og-loading" style="display: none;"></div>
+           <img id ="imagePreview"src="" style="display: block;">
+         </div>
+       </div>
+     </div>
 
-        <div class="row heading">
-          <div class="col-sm-2 col-md-1 col-xs-3 heading-avatar">
-            <div class="heading-avatar-icon">
-              <img src="images/profile/default-profile-icon-16.jpg" 
-              id="SelectedUserPicture">
-            </div>
-          </div>
-          <div class="col-sm-8 col-xs-7 heading-name">
-            <a class="heading-name-meta" id="SelectedUserName">Mesibo
-            </a>
-            <span class="heading-online">Online</span>
-          </div>
-          <div class="col-sm-1 col-xs-1  heading-dot pull-right">
-            <i class="fa fa-ellipsis-v fa-2x  pull-right" aria-hidden="true"></i>
-          </div>
+     <div class="row heading">
+      <div class="col-sm-2 col-md-1 col-xs-3 heading-avatar">
+        <div class="heading-avatar-icon">
+          <img src="images/profile/default-profile-icon.jpg" 
+          id="SelectedUserPicture">
         </div>
+      </div>
+      <div class="col-sm-8 col-xs-7 heading-name">
+        <a class="heading-name-meta" id="SelectedUserName">Mesibo
+        </a>
+        <span class="heading-online">Online</span>
+      </div>
+      <div class="col-sm-1 col-xs-1  heading-dot pull-right">
+        <i class="fa fa-ellipsis-v fa-2x  pull-right" aria-hidden="true"></i>
+      </div>
+    </div>
 
-        <div class="row message" id="conversation">
-          <div class="row message-previous">
-            <div class="col-sm-12 previous">
-            <!-- <a onclick="previous(this)" id="" name="20">
-            Show Previous Message!
-          </a> -->
+    <div class="row message" id="conversation">
+      <div class="row message-previous">
+        <div class="col-sm-12 previous">
+            
         </div>
       </div>
 
@@ -135,27 +133,18 @@
       </div>
     </div>
 
-  
 
-    <!-- https://files.mesibo.com//1//804//14763-2d6cbc606ca8f5d6.jpg/ -->
-
-<!--     <div class = side-bottom >
-      <img src="https://files.mesibo.com//1//804//14763-2d6cbc606ca8f5d6.jpg/crop/400">
-    </div> -->
-
-    <!-- <img id="image-holder" alt=""> -->
 
     <div class="row message-body">
       <div class="col-sm-12 message-main-sender">
         <div class="sender">
           <div class="col-sm-8 col-xs-7 heading-name" style="padding-left: 2%"> <a>Sender Name</a> </div>
-          <!-- <img src='https://cdn.pixabay.com/photo/2019/08/02/09/39/mugunghwa-4379251_1280.jpg'> -->
           <div class="message-text">
             Click on user to select and send a message!
           </div>
           <span class="message-time pull-right">
             00:42
-            <img class="status_msg_img" src="images/whatsapp_double_tick_coloured.png"></img>
+            <img class="status_msg_img" src="images/mesibo_double_tick_coloured.png"></img>
           </span>
         </div>
       </div>
@@ -171,20 +160,14 @@
     </div>
 
     <div class="col-sm-1 col-xs-1 reply-recording">
-      <form id="file_upload_form" method="post" enctype="multipart/form-data" action="https://s3.mesibo.com/api.php?op=upload&token=9f079c04b6bdb9d7253be331240f2d33780e97bbe4387e8e557933c" >
 
-      <input name="file" id="imgupload" size="27" type="file" style="display:none" />
-      <input type="submit" id ="submitimage" name="action" value="Upload Image" style="display:none" />
-      <i id="OpenImgUpload" class="fa fa-picture-o fa-2x" aria-hidden="true"></i>
+        <input name="file" id="imgupload" size="27" type="file" style="display:none" />
+        <i id="OpenImgUpload" class="fa fa-picture-o fa-2x" aria-hidden="true"></i>
       </form>
     </div>
 
-    <!-- <div class="col-sm-1 col-xs-1 reply-send">
-      <i class="fa fa-send fa-2x" aria-hidden="true" id='button_send_file'></i>
-    </div> -->
-
     <div class="col-sm-1 col-xs-1 reply-send">
-      <i class="fa fa-send fa-2x" aria-hidden="true" onclick="onClickSendFile()" id='alphBnt'></i>
+      <i class="fa fa-send fa-2x" aria-hidden="true" onclick="onClickSendData()" id='alphBnt'></i>
     </div>
 
 
@@ -207,8 +190,14 @@ AppStorage = new Mesibo_LocalStorage();
 var PhoneBook ;
 var activeUserList ;
 
-var contactSyncUsrToken = "c849c422841878a0bd1b53d64289954254acbd52dec86ebb7cb84"
-fetchContacts(contactSyncUsrToken);
+var accessToken = "64a00ede34220fcbe37386901a23dd9b2b493c7097ebb80cee";
+fetchContacts(accessToken);
+var api = new Mesibo();
+api.setAppName("console"); 
+api.setListener(new TestNotify());
+api.setCredentials(accessToken);
+api.start();
+
 
 
 var selected_user = "";
@@ -219,8 +208,6 @@ function InitDisplay(){
 PhoneBook = AppStorage.phoneBook;
 console.log(PhoneBook);
 
-	//For chat bot
-	
 
 if(PhoneBook.length==0)
   console.log("Error:Main:PhoneBook Not loaded or No contacts");
@@ -230,6 +217,7 @@ console.log(activeUserList);
 Mesibo_AppUtils.displayActiveUsers(activeUserList, PhoneBook);
 Mesibo_AppUtils.updateUserListOrder(PhoneBook);
 }
+
 
 function TestNotify() {}
 
@@ -302,15 +290,7 @@ TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
   }
 }
 
-var accessToken = "4080ba6528abe3bdbef60cd497f9193199dadb6b635616e2216a80"
 
-var api = new Mesibo();
-api.setAppName("dialogflowmesibo");
-// api.setAppName("MyMesiboApp");
-
-api.setListener(new TestNotify());
-api.setCredentials(accessToken);
-api.start();
 
 function sendFiletoPeer(pPeerId,pMsgId,fileURL){
   var p={};
@@ -331,13 +311,22 @@ function sendFiletoPeer(pPeerId,pMsgId,fileURL){
 
 }
 
-function onClickSendFile() {
+function onClickSendData(){
+  const fileInput = document.querySelector('#imgupload');
+  if(fileInput.files[0])
+    sendImageFile();
+  else
+    sendMessage();
+}
+
+function sendImageFile() {
   var p = {};
   p.peer = selected_user;
 
   if (!selected_user) return;
 
-  id = api.random();
+  // var id = api.random();
+  var id = parseInt(Math.random()*1000);
     msg_payload = {
       'id': id,
       'peer': p.peer,
@@ -365,7 +354,7 @@ function onClickSendFile() {
       retrievedMsgHash = JSON.parse(retrievedMsgHash);
 
 
-    uploadAndSendFile(msg_payload);
+    uploadAndSendFile(msg_payload,accessToken);
 
     Mesibo_AppUtils.updateLastMsg(Mesibo_AppUtils.getUserFromPhone(p.peer, PhoneBook), p.peer);
     Mesibo_AppUtils.updateScroll();
@@ -384,7 +373,8 @@ function sendMessage() {
   var p = {};
   p.peer = selected_user;
   if (!selected_user) return;
-  var id = parseInt(Math.random() * 10000);
+  // var id = api.random();
+  var id = parseInt(Math.random()*10000);
   var msgdata = "Hello from Mesibo Javascript API!";
   msgdata = document.getElementById("comment").value;
   if (msgdata) {
@@ -410,6 +400,8 @@ function sendMessage() {
     if (retrievedMsgHash)
       retrievedMsgHash = JSON.parse(retrievedMsgHash);
     Mesibo_AppUtils.createSentBubble(msg_payload);
+
+    console.log("===> Sending Message with parameters ..",p,id,msgdata);
     api.sendMessage(p, id, msgdata);
     document.getElementById("comment").value = "";
     Mesibo_AppUtils.updateLastMsg(Mesibo_AppUtils.getUserFromPhone(p.peer, PhoneBook), p.peer);
@@ -520,10 +512,6 @@ $('#closePreviewButton').click(function() {
   return false;
 });
 
-// $('#button_send_file').click(function(){
-//   uploadFile();
-//  $('#submitimage').trigger('click'); 
-// });
 
     </script>
   </body>

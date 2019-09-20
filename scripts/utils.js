@@ -192,12 +192,9 @@ class Mesibo_AppUtils {
 
   static createDateHeaderForHistory(msg_data, previous_date) {
     var current_date = Mesibo_AppUtils.dateNow(msg_data['ts']);
-    // console.log(current date,msg_data['data'],msg_data['ts']);
 
     if (previous_date != current_date) {
       previous_date = current_date;
-      // Mesibo_AppUtils.createDateHeaderBlock(current_date);
-      // console.log("Making header for date");
 
       if (current_date == Mesibo_AppUtils.dateNow(+new Date()))
         Mesibo_AppUtils.createDateHeaderBlock("Today");
@@ -248,20 +245,20 @@ class Mesibo_AppUtils {
       switch (status) {
 
         case MESIBO_MSGSTATUS_SENT:
-          statusTick.setAttribute("src", "images/whatsapp_single_tick.png");
+          statusTick.setAttribute("src", "images/mesibo_single_tick.png");
           break;
 
         case MESIBO_MSGSTATUS_DELIVERED:
-          statusTick.setAttribute("src", "images/whatsapp_double_tick.png");
+          statusTick.setAttribute("src", "images/mesibo_double_tick.png");
           break;
 
 
         case MESIBO_MSGSTATUS_READ:
-          statusTick.setAttribute("src", "images/whatsapp_double_tick_coloured.png");
+          statusTick.setAttribute("src", "images/mesibo_double_tick_coloured.png");
           break;
 
         default:
-          statusTick.setAttribute("src", "images/ic_av_timer.png");
+          statusTick.setAttribute("src", "images/mesibo_timer.png");
 
       }
     }
@@ -383,41 +380,48 @@ class Mesibo_AppUtils {
 
   }
 
+  //If sync is required
   static getSyncPhoneBook(contactsArray) {
     console.log("===>Mesibo_AppUtils.getSyncPhoneBook called");
-    //Get from LocalStorage or somewhere
+    //If you need to synchronise contact names provide a json object in the following format
+
     var SyncPhoneBook = {
-      "917019882153": {
-        "name": "Nagendra Y",
-        "phone": "917019882153"
+      "phone_number": {
+        "name": "contact_name",
+        "phone": "phone_number"
       },
-      "917200721825": {
-        "name": "Ankit Kumar",
-        "phone": "917200721825"
-      },
-      "919449114208": {
-        "name": "Krishna Priya",
-        "phone": "919449114208"
-      },
-      "919113203545": {
-        "name": "Test YM",
-        "phone": "919113203545"
+      
+    //For example	    
+	"91xxxxxxxxxx": {
+        "name": "Test User",
+        "phone": "91xxxxxxxxxx"
       },
     };
-
+    
+    console.log(contactsArray);	  
     var NewPhoneBook = {};
 
+	  
     if (contactsArray && SyncPhoneBook) {
       for (var i = 0; i < contactsArray.length; i++) {
         if (Object.keys(SyncPhoneBook).includes(contactsArray[i]['phone'])) {
-          console.log("Make Sync")
           contactsArray[i]['name'] = SyncPhoneBook[contactsArray[i]['phone']]['name'];
           NewPhoneBook[contactsArray[i]['name']] = contactsArray[i];
         }
       }
     }
-    return NewPhoneBook;
+   
+      return NewPhoneBook;
 
+  }
+  
+  static getPhoneBookFromContacts(contactsArray) {
+	   
+      var NewPhoneBook = {};
+      for (var i = 0; i < contactsArray.length; i++) {
+          NewPhoneBook[contactsArray[i]['name']] = contactsArray[i];
+        }
+      return NewPhoneBook
   }
 
   static createProfileBlock(profileDetails) {
@@ -579,7 +583,7 @@ async function fetchContacts(usrToken) {
     return contact.gid == 0;
   });
 
-  var PhoneBook = Mesibo_AppUtils.getSyncPhoneBook(personsOnly);
+  var PhoneBook = Mesibo_AppUtils.getPhoneBookFromContacts(personsOnly);
   localStorage.setItem("Mesibo_LocalPhoneBook", JSON.stringify(PhoneBook));
 
   InitDisplay();
@@ -588,7 +592,7 @@ async function fetchContacts(usrToken) {
   Mesibo_AppUtils.createContactsListDisplay(Object.values(PhoneBook));
 }
 
-async function uploadAndSendFile(msg_payload) {
+async function uploadAndSendFile(msg_payload, usrToken) {
   console.log("===> uploadAndSendFile called");
   $('#imagePreviewHolder').hide();
   
@@ -612,7 +616,7 @@ async function uploadAndSendFile(msg_payload) {
 
   };
 
-  const response = await fetch('https://s3.mesibo.com/api.php?op=upload&token=3e7694e19d192588a4ffcb4eab26b6afb3d5aada54bbd41edd71400', options);
+  const response = await fetch('https://s3.mesibo.com/api.php?op=upload&token='+ usrToken, options);
   console.log(response);
   const image_url = await response.json();
   console.log(image_url['file'])
