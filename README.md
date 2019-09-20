@@ -15,5 +15,5 @@ Features currently in development:
 
  
 ## Web demo:
-https://nagendra1997.github.io/mesibo-web/
+https://mesibo.github.io/mesibo-web/
 
