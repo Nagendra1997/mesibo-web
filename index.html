@@ -253,7 +253,7 @@ TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
 
   if (!m.presence) { // Not activity but actual message
 
-    if (selected_user == m.peer) {
+    if ((selected_user == m.peer )&& (m.flag == MESIBO_FLAG_READRECEIPT | MESIBO_FLAG_DELIVERYRECEIPT)) {
       //Send RR
       sendReadReceipt(m.peer,m.id);
 
@@ -325,8 +325,8 @@ function sendImageFile() {
 
   if (!selected_user) return;
 
-  // var id = api.random();
-  var id = parseInt(Math.random()*1000);
+  var id = api.random();
+  // var id = parseInt(Math.random()*1000);
     msg_payload = {
       'id': id,
       'peer': p.peer,
@@ -372,9 +372,11 @@ function sendReadReceipt(pPeerId,pMsgId) {
 function sendMessage() {
   var p = {};
   p.peer = selected_user;
+  p.flag = MESIBO_FLAG_DELIVERYRECEIPT | MESIBO_FLAG_READRECEIPT;
   if (!selected_user) return;
-  // var id = api.random();
-  var id = parseInt(Math.random()*10000);
+  var id = api.random();
+  console.log("RANDOM ID",id);
+	//var id = parseInt(Math.random()*10000);
   var msgdata = "Hello from Mesibo Javascript API!";
   msgdata = document.getElementById("comment").value;
   if (msgdata) {

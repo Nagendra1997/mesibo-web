@@ -283,7 +283,7 @@ class Mesibo_AppUtils {
     //Update read receipt for all previously delievered messages
     //TBD: Maybe have a lastMsgRead pos in ls,to make iterate faster and stop it there
     
-    console.log(pMsgArray);
+    // console.log(pMsgArray);
 
     for(var i=MsgIdPos-1;i>=0; i--){
       if(pMsgArray[i]['status'] == MESIBO_MSGSTATUS_DELIVERED|MESIBO_MSGSTATUS_READ){
@@ -372,7 +372,7 @@ class Mesibo_AppUtils {
 
   static createContactsListDisplay(contactsArray) {
     console.log("===>utils:createContactsListDisplay called ");
-    console.log(contactsArray);
+    // console.log(contactsArray);
     if (contactsArray) {
       for (var i = 0; i < contactsArray.length; i++)
         Mesibo_AppUtils.createProfileBlock(contactsArray[i]);
