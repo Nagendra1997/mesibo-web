@@ -140,6 +140,31 @@ class Mesibo_LocalStorage {
 
   }
 
+  updateFileUrl(id,peer,fileUrl){
+     var retrievedMsgArray = localStorage.getItem(peer);
+    //MsgList Entry Will always exist if msg sent.No need to check
+    var jsonMsgArray = JSON.parse(retrievedMsgArray);
+    // console.log(jsonMsgArray);
+
+    var msgIdPos = -1;
+
+    
+    for (var i = jsonMsgArray.length - 1; i >= 0; i--) {
+      if (jsonMsgArray[i]['id'] == id) {
+        jsonMsgArray[i]['fileurl'] = fileUrl;
+        msgIdPos = i ;
+        break;
+      }
+    }
+
+    if(msgIdPos == -1){
+      console.log("Error:localstorage.js:updateItemSent: Message ID not found");
+    }
+
+    localStorage.setItem(peer, JSON.stringify(jsonMsgArray));
+
+  }
+
   updateItemRecieved(m, string) {
     console.log("===>LocalStorage_UpdateItemRecieved called");
     var retrievedMsgArray = localStorage.getItem(m.peer);

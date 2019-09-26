@@ -104,7 +104,7 @@
       <div class="col-sm-8 col-xs-7 heading-name">
         <a class="heading-name-meta" id="SelectedUserName">Mesibo
         </a>
-        <span class="heading-online">Online</span>
+        <span id="onlineStatus" class="heading-online">Online</span>
       </div>
       <div class="col-sm-1 col-xs-1  heading-dot pull-right">
         <i class="fa fa-ellipsis-v fa-2x  pull-right" aria-hidden="true"></i>
@@ -182,8 +182,13 @@
 <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript">
 
-const MESIBO_FLAG_DELIVERYRECEIPT = 1
-const MESIBO_FLAG_READRECEIPT     = 2
+const MESIBO_FLAG_DELIVERYRECEIPT    =  1
+const MESIBO_FLAG_READRECEIPT        =  2
+
+const MESIBO_ACTIVITY_ONLINE         =  1
+const MESIBO_ACTIVITY_TYPING         =  3
+const MESIBO_ACTIVITY_TYPINGCLEARED  =  4
+const MESIBO_ACTIVITY_LEFT           =  11
 
 //GLOBAL SCOPE
 AppStorage = new Mesibo_LocalStorage();
@@ -251,7 +256,8 @@ TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
     var string = new TextDecoder("utf-8").decode(data);
   msgRecievedTimeStamp = +new Date;
 
-  if (!m.presence) { // Not activity but actual message
+  if (!m.presence) { // Not activity but actual message but user Online
+    document.getElementById("onlineStatus").textContent="Online";
 
     if ((selected_user == m.peer )&& (m.flag == MESIBO_FLAG_READRECEIPT | MESIBO_FLAG_DELIVERYRECEIPT)) {
       //Send RR
@@ -288,6 +294,15 @@ TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
     Mesibo_AppUtils.updateLastMsg(Mesibo_AppUtils.getUserFromPhone(m.peer, PhoneBook), m.peer);
 
   }
+
+  if(m.presence){
+    if(m.presence == MESIBO_ACTIVITY_ONLINE)
+      document.getElementById("onlineStatus").textContent="Online";
+    else if(m.presence == MESIBO_ACTIVITY_TYPING)
+      document.getElementById("onlineStatus").textContent="Typing...";
+    else if(m.presence == MESIBO_ACTIVITY_LEFT)
+      document.getElementById("onlineStatus").textContent="";
+  }
 }
 
 
@@ -305,8 +320,8 @@ function sendFiletoPeer(pPeerId,pMsgId,fileURL,thumbnail,message){
   // msg.title = "Test Image";
   msg.message = message;
   msg.tn = thumbnail;
+  console.log("------Sending File------");
   console.log(p)
-  
   console.log(msg)
   api.sendFile(p,pMsgId,msg);
 
@@ -339,8 +354,7 @@ function sendImageFile() {
       'flag': 0,
       'status': MESIBO_MSGSTATUS_OUTBOX,
       'origin': MESIBO_MSG_ORIGIN_SENT , // TBD
-      'filetype':1 ,// 1 for image
-      'fileurl': 'files.mesibo.com/1/467/14763-a65fe24e58cca8c9.jpeg'
+      'filetype':1 , // 1 for image
     };
 
     if (!Mesibo_AppUtils.getLastTs(p.peer, PhoneBook) || (!(Mesibo_AppUtils.dateNow(Mesibo_AppUtils.getLastTs(p.peer, PhoneBook)) == Mesibo_AppUtils.dateNow(msg_payload['ts'])))) {
@@ -358,7 +372,7 @@ function sendImageFile() {
       retrievedMsgHash = JSON.parse(retrievedMsgHash);
 
 
-    uploadAndSendFile(msg_payload,accessToken);
+    uploadAndSendFile(msg_payload,accessToken,AppStorage);
 
     Mesibo_AppUtils.updateLastMsg(Mesibo_AppUtils.getUserFromPhone(p.peer, PhoneBook), p.peer);
     Mesibo_AppUtils.updateScroll();

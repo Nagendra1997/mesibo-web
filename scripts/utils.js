@@ -603,7 +603,7 @@ async function fetchContacts(usrToken) {
   Mesibo_AppUtils.createContactsListDisplay(Object.values(PhoneBook));
 }
 
-async function uploadAndSendFile(msg_payload, usrToken) {
+async function uploadAndSendFile(msg_payload, usrToken,AppStorage) {
   console.log("===> uploadAndSendFile called");
   $('#imagePreviewHolder').hide();
 
@@ -630,14 +630,12 @@ async function uploadAndSendFile(msg_payload, usrToken) {
   const response = await fetch('https://s3.mesibo.com/api.php?op=upload&token=' + usrToken, options);
   console.log(response);
   const image_url = await response.json();
-  console.log(image_url['file'])
+  console.log(image_url['file']);
 
-  msg_payload['file'] = image_url['file'];
+  msg_payload['fileurl'] = image_url['file'];
+  AppStorage.updateFileUrl(msg_payload['id'],msg_payload['peer'],image_url['file']);
   Mesibo_AppUtils.createImageSentBubble(msg_payload);
   resize(fileInput.files[0],200,200,'base64',msg_payload,image_url['file']);
-  // sendWithThumbnail( fileInput.files[0],msg_payload,image_url['file']);
-  // console.log("===> THUMBNAIL",imgThumbnail);
-  // sendFiletoPeer(msg_payload['peer'], msg_payload['id'], image_url['file'],imgThumbnail);
 
 }
 
