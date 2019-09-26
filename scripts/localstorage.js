@@ -75,10 +75,18 @@ class Mesibo_LocalStorage {
         var msg_data = msg_hist_data[i];
         previous_date = Mesibo_AppUtils.createDateHeaderForHistory(msg_data, previous_date);
 
-        if (msg_data['flag'] == 0)
-          Mesibo_AppUtils.createSentBubble(msg_data);
-        else
+        if (msg_data['flag'] == 0){
+          if(msg_data['filetype'])
+            Mesibo_AppUtils.createImageSentBubble(msg_data);
+          else
+            Mesibo_AppUtils.createSentBubble(msg_data);
+        }
+        else {
+          if(msg_data['filetype'])
+            Mesibo_AppUtils.createImageRecievedBubble(msg_data);
+          else
           Mesibo_AppUtils.createRecievedBubble(msg_data);
+      }
       }
 
     }

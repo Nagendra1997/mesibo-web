@@ -89,7 +89,7 @@
           <span id="closePreviewButton" class="og-close"></span>
           <div class="og-fullimg" >
            <div class="og-loading" style="display: none;"></div>
-           <img id ="imagePreview"src="" style="display: block;">
+           <img id ="imagePreview" src="" style="display: block;">
          </div>
        </div>
      </div>
@@ -292,18 +292,19 @@ TestNotify.prototype.Mesibo_OnMessage = function(m, data) {
 
 
 
-function sendFiletoPeer(pPeerId,pMsgId,fileURL){
+function sendFiletoPeer(pPeerId,pMsgId,fileURL,thumbnail,message){
   var p={};
   p.peer = pPeerId; 
   p.flag = MESIBO_FLAG_DELIVERYRECEIPT | MESIBO_FLAG_READRECEIPT;
 
   var msg = {};
   msg.type = 1;
-  msg.size = 1023;
+  // msg.size = 0;
   msg.url = fileURL;
   console.log(msg.url)
-  msg.title = "Test Image";
-  msg.message = " Test image JS";
+  // msg.title = "Test Image";
+  msg.message = message;
+  msg.tn = thumbnail;
   console.log(p)
   
   console.log(msg)
@@ -331,12 +332,15 @@ function sendImageFile() {
       'id': id,
       'peer': p.peer,
       'params': p,
-      'data': "<image>",
+      'data': document.getElementById("comment").value,
+
       'groupid': 0,
       'ts': +new Date,
       'flag': 0,
       'status': MESIBO_MSGSTATUS_OUTBOX,
-      'origin': MESIBO_MSG_ORIGIN_SENT  // TBD
+      'origin': MESIBO_MSG_ORIGIN_SENT , // TBD
+      'filetype':1 ,// 1 for image
+      'fileurl': 'files.mesibo.com/1/467/14763-a65fe24e58cca8c9.jpeg'
     };
 
     if (!Mesibo_AppUtils.getLastTs(p.peer, PhoneBook) || (!(Mesibo_AppUtils.dateNow(Mesibo_AppUtils.getLastTs(p.peer, PhoneBook)) == Mesibo_AppUtils.dateNow(msg_payload['ts'])))) {
