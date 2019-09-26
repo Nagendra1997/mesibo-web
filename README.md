@@ -5,9 +5,6 @@ This repository contains the source code for the Mesibo Sample Web app using Mes
 
 > Please note that this is currently **under development** and will be continously updated. 
 
-```html
-<script type="text/javascript" src="https://api.mesibo.com/mesibo.js"></script>
-```
 Features currently in development:
 - Show spinner for file sending and receiving progress
 - Show image/file in last sent status
