@@ -9,11 +9,12 @@ To use Mesibo Javascript API in your web app,[Install Mesibo Javascript SDK](htt
 <script type="text/javascript" src="https://api.mesibo.com/mesibo.js"></script>
 ```
 Features currently in development:
-- Adjusting chat bubble width to image width
-- Currently files supported are image and video
-- Changing image resolution
-
+- Show spinner for file sending and receiving progress
+- Show image/file in last sent status
+- Sending other files: Video,document,etc and different thumbnail for each file type
+- Adding Emoji in toolbar
+- Edit self profile details
+- Text search and user search
+- Forwarding and deleting messages
  
-## Web demo:
-https://mesibo.github.io/mesibo-web/
 
