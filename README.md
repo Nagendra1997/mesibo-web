@@ -1,9 +1,9 @@
 # mesibo-web
 
-This repository contains the source code for the Mesibo Sample Web app.
-Please note that the web-demo app, is currently under development and will be continously updated.
+# Mesibo Javascript Sample App
+This repository contains the source code for the Mesibo Sample Web app using Mesibo Javascript API
 
-To use Mesibo Javascript API in your web app,[Install Mesibo Javascript SDK](https://mesibo.com/documentation/install/javascript/)  by including the following in your code:
+> Please note that this is currently **under development** and will be continously updated. 
 
 ```html
 <script type="text/javascript" src="https://api.mesibo.com/mesibo.js"></script>
