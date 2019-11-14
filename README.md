@@ -1,5 +1,3 @@
-# mesibo-web
-
 # Mesibo Javascript Sample App
 This repository contains the source code for the Mesibo Sample Web app using Mesibo Javascript API
 
