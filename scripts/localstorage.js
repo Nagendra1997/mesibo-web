@@ -1,35 +1,34 @@
 //localstorage.js
 
-class Mesibo_LocalStorage {
+class MesiboLocalStorage {
 
-  get activeUsers() {
-    console.log("===>LocalStorage_GetActiveUsers called");
-    var activeUserList = localStorage.getItem("Mesibo_MsgUsr_Hash");
-    // console.log(activeUserList);
-    if (activeUserList) {
-      activeUserList = Object.values(JSON.parse(activeUserList));
-      activeUserList = activeUserList.filter(onlyUnique); 
-    } 
-    else
-      activeUserList = [];
+  getActiveUserList() {
+    MesiboLog("===>LocalStorage_GetActiveUsers called");
+    const activeMsgUsr = localStorage.getItem("Mesibo_MsgUsr_Hash");
+    var activeUserList = [];
+    MesiboLog("Mesibo_MsgUsr_Hash", activeMsgUsr);
+    if (activeMsgUsr) {
+      activeUserList = Object.values(JSON.parse(activeMsgUsr));
+      activeUserList = activeUserList.filter(onlyUnique);
+    }
 
-    // console.log(activeUserList);
+    MesiboLog(activeUserList);
     return activeUserList;
   }
 
-  get phoneBook() {
+  getPhoneBook() {
     var localPhoneBook = localStorage.getItem("Mesibo_LocalPhoneBook");
     if (!localPhoneBook)
       localPhoneBook = {};
     else
       localPhoneBook = JSON.parse(localPhoneBook);
-    // console.log(localPhoneBook);
+    // MesiboLog(localPhoneBook);
     return localPhoneBook;
   }
 
-  getMsgArrayForPeer(pPeerId){
+  getMsgArrayForPeer(pPeerId) {
     var peerMsgArray = localStorage.getItem(pPeerId);
-    if(peerMsgArray)
+    if (peerMsgArray)
       return JSON.parse(peerMsgArray);
     else
       return [];
@@ -41,18 +40,18 @@ class Mesibo_LocalStorage {
     if (retrievedMsgHash)
       retrievedMsgHash = JSON.parse(retrievedMsgHash);
     else {
-      console.log("Error: Invalid message ID");
+      MesiboLog("Error: Invalid message ID");
       return -1;
     }
 
     return retrievedMsgHash[msgId];
   }
 
-  getLastReceived(pPeerId){
+  getLastReceived(pPeerId) {
     var jsonMsgArray = this.getMsgArrayForPeer(pPeerId);
-    if(jsonMsgArray){
-      for(var i=jsonMsgArray.length-1;i>=0;i--){
-        if(jsonMsgArray[i]['origin']== MESIBO_MSG_ORIGIN_RECIEVED)
+    if (jsonMsgArray) {
+      for (var i = jsonMsgArray.length - 1; i >= 0; i--) {
+        if (jsonMsgArray[i]['origin'] == MESIBO_MSG_ORIGIN_RECIEVED)
           return jsonMsgArray[i]['id'];
       }
     }
@@ -60,7 +59,7 @@ class Mesibo_LocalStorage {
   }
 
   loadHistory(selected_user) {
-    console.log("===>LocalStorage_LoadHistory called")
+    MesiboLog("===>LocalStorage_LoadHistory called")
 
     var msg_history = JSON.parse(localStorage.getItem(selected_user));
 
@@ -73,20 +72,19 @@ class Mesibo_LocalStorage {
 
       for (var i = 0; i < msg_hist_data.length; i++) {
         var msg_data = msg_hist_data[i];
-        previous_date = Mesibo_AppUtils.createDateHeaderForHistory(msg_data, previous_date);
+        previous_date = MesiboUIUtils.createDateHeaderForHistory(msg_data, previous_date);
 
-        if (msg_data['flag'] == 0){
-          if(msg_data['filetype'])
-            Mesibo_AppUtils.createImageSentBubble(msg_data);
+        if (msg_data['flag'] == 0) {
+          if (msg_data['filetype'])
+            MesiboUIUtils.createImageSentBubble(msg_data);
           else
-            Mesibo_AppUtils.createSentBubble(msg_data);
+            MesiboUIUtils.createSentBubble(msg_data);
+        } else {
+          if (msg_data['filetype'])
+            MesiboUIUtils.createImageRecievedBubble(msg_data);
+          else
+            MesiboUIUtils.createRecievedBubble(msg_data);
         }
-        else {
-          if(msg_data['filetype'])
-            Mesibo_AppUtils.createImageRecievedBubble(msg_data);
-          else
-          Mesibo_AppUtils.createRecievedBubble(msg_data);
-      }
       }
 
     }
@@ -95,70 +93,70 @@ class Mesibo_LocalStorage {
   //m is the message object
 
   updateItemSent(m) {
-    console.log("===>LocalStorage_UpdateItemSent called");
+    MesiboLog("===>LocalStorage_UpdateItemSent called");
     var retrievedMsgArray = localStorage.getItem(m.peer);
     //MsgList Entry Will always exist if msg sent.No need to check
     var jsonMsgArray = JSON.parse(retrievedMsgArray);
-    // console.log(jsonMsgArray);
+    // MesiboLog(jsonMsgArray);
 
     var msgIdPos = -1;
 
-    // console.log(jsonMsgArray,m.id);
-    
+    // MesiboLog(jsonMsgArray,m.id);
+
     for (var i = jsonMsgArray.length - 1; i >= 0; i--) {
       if (jsonMsgArray[i]['id'] == m.id) {
         jsonMsgArray[i]['params'] = m;
         jsonMsgArray[i]['status'] = m.status;
-        msgIdPos = i ;
+        msgIdPos = i;
         break;
       }
     }
 
-    if(msgIdPos == -1){
-      console.log("Error:localstorage.js:updateItemSent: Message ID not found");
+    if (msgIdPos == -1) {
+      MesiboLog("Error:localstorage.js:updateItemSent: Message ID not found");
     }
 
     //If status for this message is read , update read status for all
     //previous messages in storage
 
-    if(m.status == MESIBO_MSGSTATUS_READ){
+    if (m.status == MESIBO_MSGSTATUS_READ) {
 
-      for(var i = msgIdPos ; i >= 0; i--){
-        // console.log(jsonMsgArray[i]['data']);
-        if(jsonMsgArray[i]['status'] == MESIBO_MSGSTATUS_DELIVERED){
+      for (var i = msgIdPos; i >= 0; i--) {
+        // MesiboLog(jsonMsgArray[i]['data']);
+        if (jsonMsgArray[i]['status'] == MESIBO_MSGSTATUS_DELIVERED) {
           jsonMsgArray[i]['status'] = MESIBO_MSGSTATUS_READ;
           jsonMsgArray[i]['params']['status'] = MESIBO_MSGSTATUS_READ;
         }
       }
     }
 
-    // console.log("After updateItemSent",jsonMsgArray);
+    // MesiboLog("After updateItemSent",jsonMsgArray);
 
     localStorage.setItem(m.peer, JSON.stringify(jsonMsgArray));
 
-    // console.log("After updateItemSent localstorage",JSON.parse(localStorage.getItem(m.peer)));
+    // MesiboLog("After updateItemSent localstorage",JSON.parse(localStorage.getItem(m.peer)));
 
   }
 
-  updateFileUrl(id,peer,fileUrl){
-     var retrievedMsgArray = localStorage.getItem(peer);
+  updateFileUrl(id, peer, fileUrl) {
+    var retrievedMsgArray = localStorage.getItem(peer);
     //MsgList Entry Will always exist if msg sent.No need to check
     var jsonMsgArray = JSON.parse(retrievedMsgArray);
-    // console.log(jsonMsgArray);
+    // MesiboLog(jsonMsgArray);
 
     var msgIdPos = -1;
 
-    
+
     for (var i = jsonMsgArray.length - 1; i >= 0; i--) {
       if (jsonMsgArray[i]['id'] == id) {
         jsonMsgArray[i]['fileurl'] = fileUrl;
-        msgIdPos = i ;
+        msgIdPos = i;
         break;
       }
     }
 
-    if(msgIdPos == -1){
-      console.log("Error:localstorage.js:updateItemSent: Message ID not found");
+    if (msgIdPos == -1) {
+      MesiboLog("Error:localstorage.js:updateItemSent: Message ID not found");
     }
 
     localStorage.setItem(peer, JSON.stringify(jsonMsgArray));
@@ -166,7 +164,7 @@ class Mesibo_LocalStorage {
   }
 
   updateItemRecieved(m, string) {
-    console.log("===>LocalStorage_UpdateItemRecieved called");
+    MesiboLog("===>LocalStorage_UpdateItemRecieved called");
     var retrievedMsgArray = localStorage.getItem(m.peer);
     var jsonMsgArray = [];
 
@@ -181,13 +179,13 @@ class Mesibo_LocalStorage {
       'groupid': 0,
       'ts': +new Date,
       'flag': m.flag,
-      'origin':MESIBO_MSG_ORIGIN_RECIEVED
+      'origin': MESIBO_MSG_ORIGIN_RECIEVED
     });
     localStorage.setItem(m.peer, JSON.stringify(jsonMsgArray));
   }
 
   newItemSent(id, peer, msg_payload) {
-    console.log("===>LocalStorage_NewItemSent called");
+    MesiboLog("===>LocalStorage_NewItemSent called");
     var retrievedMsgArray = localStorage.getItem(peer);
 
     if (retrievedMsgArray)
@@ -198,7 +196,7 @@ class Mesibo_LocalStorage {
     retrievedMsgArray.push(msg_payload);
     localStorage.setItem(peer, JSON.stringify(retrievedMsgArray));
 
-    console.log(JSON.parse(localStorage.getItem(peer)));
+    MesiboLog(JSON.parse(localStorage.getItem(peer)));
   }
 
 
@@ -217,7 +215,6 @@ class Mesibo_LocalStorage {
 
 }
 
-  function onlyUnique(value, index, self) { 
-    return self.indexOf(value) === index;
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
 }
-

@@ -1,56 +1,37 @@
 //utils.js      
 
-
-const MESIBO_READFLAG_READRECEIPT = 1;
-const MESIBO_READFLAG_SENDLAST = 2;
-const MESIBO_READFLAG_FIFO = 4;
-const MESIBO_READFLAG_SUMMARY = 0x10;
-const MESIBO_READFLAG_SENDEOR = 0x20;
-const MESIBO_READFLAG_WITHFILES = 0x80;
-const MESIBO_MSGSTATUS_OUTBOX = 0
-const MESIBO_MSGSTATUS_SENT = 1
-const MESIBO_MSGSTATUS_DELIVERED = 2
-const MESIBO_MSGSTATUS_READ = 3
-const MESIBO_MSGSTATUS_RECEIVEDNEW = 0x12
-const MESIBO_MSGSTATUS_RECEIVEDREAD = 0x13
-const MESIBO_MSGSTATUS_CALLMISSED = 0x15
-const MESIBO_MSGSTATUS_CALLINCOMING = 0x16
-const MESIBO_MSGSTATUS_CALLOUTGOING = 0x17
-const MESIBO_MSGSTATUS_CUSTOM = 0x20
-const MESIBO_MSGSTATUS_FAIL = 0x80
-const MESIBO_MSGSTATUS_USEROFFLINE = 0x81
-const MESIBO_MSGSTATUS_INBOXFULL = 0x82
-const MESIBO_MSGSTATUS_INVALIDDEST = 0x83
-const MESIBO_MSGSTATUS_EXPIRED = 0x84
-const MESIBO_MSGSTATUS_BLOCKED = 0x88
-
 const MESIBO_MSG_ORIGIN_SENT = 0
 const MESIBO_MSG_ORIGIN_RECIEVED = 1
 
-class Mesibo_AppUtils {
+isDebug = true // toggle this to turn on / off for global control
+
+if (isDebug) var MesiboLog = console.log.bind(window.console)
+else var MesiboLog = function() {}
+
+class MesiboUIUtils {
 
   static timeNow() {
-    var d = new Date();
-    h = (d.getHours() < 10 ? '0' : '') + d.getHours();
-    m = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
+    const d = new Date();
+    const h = (d.getHours() < 10 ? '0' : '') + d.getHours();
+    const m = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
     return h + ':' + m;
   }
 
   static timeFromTs(ts) {
-    var theDate = new Date(ts);
-    var dateString = theDate.toLocaleTimeString();
+    const theDate = new Date(ts);
+    const dateString = theDate.toLocaleTimeString();
     return dateString.slice(0, 5);
   }
 
   static dateNow(ts) {
-    var theDate = new Date(ts);
-    var dateString = theDate.toString();
+    const theDate = new Date(ts);
+    const dateString = theDate.toString();
     return dateString.slice(0, 4) + ', ' + dateString.slice(4, 10);
   }
 
   static dateYesterday(ts) {
-    var today = new Date(ts);
-    var yesterday = new Date(today);
+    const today = new Date(ts);
+    const yesterday = new Date(today);
     yesterday.setDate(today.getDate() - 1);
     var yesterdayString = yesterday.toString();
 
@@ -70,7 +51,7 @@ class Mesibo_AppUtils {
     timeSpan.className = 'message-time pull-right';
 
     var msgcontent = document.createTextNode(msg_data['data']);
-    var timecontent = document.createTextNode(Mesibo_AppUtils.timeFromTs(msg_data['ts']));
+    var timecontent = document.createTextNode(MesiboUIUtils.timeFromTs(msg_data['ts']));
 
     textDiv.append(msgcontent);
     timeSpan.append(timecontent);
@@ -103,7 +84,7 @@ class Mesibo_AppUtils {
     timeSpan.className = 'message-time pull-right';
 
     var msgcontent = document.createTextNode(msg_data['data']);
-    var timecontent = document.createTextNode(Mesibo_AppUtils.timeFromTs(msg_data['ts']));
+    var timecontent = document.createTextNode(MesiboUIUtils.timeFromTs(msg_data['ts']));
 
     textDiv.append(msgcontent);
     timeSpan.append(timecontent);
@@ -136,11 +117,11 @@ class Mesibo_AppUtils {
 
     var statusTick = document.createElement('img');
     statusTick.className = 'status_msg_img';
-    Mesibo_AppUtils.updateStatusTick(statusTick, msg_data['status']);
+    MesiboUIUtils.updateStatusTick(statusTick, msg_data['status']);
     statusTick.setAttribute("id", msg_data['id']);
 
     var msgcontent = document.createTextNode(msg_data['data']);
-    var timecontent = document.createTextNode(Mesibo_AppUtils.timeFromTs(msg_data['ts']));
+    var timecontent = document.createTextNode(MesiboUIUtils.timeFromTs(msg_data['ts']));
 
     textDiv.append(msgcontent);
     timeSpan.append(timecontent);
@@ -171,8 +152,8 @@ class Mesibo_AppUtils {
     var imgDiv = document.createElement('img');
     imgDiv.className = 'resize_fit_center';
     imgDiv.setAttribute('src', msg_data['fileurl']);
-    imgDiv.setAttribute('display',"max-width: 200px;");
-    
+    imgDiv.setAttribute('display', "max-width: 200px;");
+
     var textDiv = document.createElement('div');
     textDiv.className = 'message-text';
     var timeSpan = document.createElement('span');
@@ -180,11 +161,11 @@ class Mesibo_AppUtils {
 
     var statusTick = document.createElement('img');
     statusTick.className = 'status_msg_img';
-    Mesibo_AppUtils.updateStatusTick(statusTick, msg_data['status']);
+    MesiboUIUtils.updateStatusTick(statusTick, msg_data['status']);
     statusTick.setAttribute("id", msg_data['id']);
 
     var msgcontent = document.createTextNode(msg_data['data']);
-    var timecontent = document.createTextNode(Mesibo_AppUtils.timeFromTs(msg_data['ts']));
+    var timecontent = document.createTextNode(MesiboUIUtils.timeFromTs(msg_data['ts']));
 
     textDiv.append(msgcontent);
     timeSpan.append(timecontent);
@@ -202,17 +183,17 @@ class Mesibo_AppUtils {
 
 
   static createDateHeaderForHistory(msg_data, previous_date) {
-    var current_date = Mesibo_AppUtils.dateNow(msg_data['ts']);
+    var current_date = MesiboUIUtils.dateNow(msg_data['ts']);
 
     if (previous_date != current_date) {
       previous_date = current_date;
 
-      if (current_date == Mesibo_AppUtils.dateNow(+new Date()))
-        Mesibo_AppUtils.createDateHeaderBlock("Today");
-      else if (current_date == Mesibo_AppUtils.dateYesterday(+new Date()))
-        Mesibo_AppUtils.createDateHeaderBlock("Yesterday");
+      if (current_date == MesiboUIUtils.dateNow(+new Date()))
+        MesiboUIUtils.createDateHeaderBlock("Today");
+      else if (current_date == MesiboUIUtils.dateYesterday(+new Date()))
+        MesiboUIUtils.createDateHeaderBlock("Yesterday");
       else
-        Mesibo_AppUtils.createDateHeaderBlock(current_date);
+        MesiboUIUtils.createDateHeaderBlock(current_date);
     }
 
     return previous_date;
@@ -236,16 +217,16 @@ class Mesibo_AppUtils {
   }
 
   static getUserFromPhone(phone_number, phone_book) {
-    // console.log(phone_number, phone_book);
+    // MesiboLog(phone_number, phone_book);
     var user_list = Object.keys(phone_book);
 
     for (var i = 0; i < user_list.length; i++) {
-      // console.log(phone_book[user_list[i]]['phone'] == phone_number)
+      // MesiboLog(phone_book[user_list[i]]['phone'] == phone_number)
       if (phone_book[user_list[i]]['phone'] == phone_number)
         return user_list[i];
     }
 
-    console.log("User does not exist with phone phone number", phone_number);
+    MesiboLog("User does not exist with  phone number", phone_number);
     return -1;
   }
 
@@ -277,7 +258,7 @@ class Mesibo_AppUtils {
   }
 
   static updateReadPrevious(pMsgArray, pMsgId) {
-    console.log("===>utils:updateReadPrevious called ");
+    MesiboLog("===>utils:updateReadPrevious called ");
     var MsgIdPos = -1;
     for (var i = pMsgArray.length - 1; i >= 0; i--) {
       if (pMsgArray[i]['id'] == pMsgId) {
@@ -287,19 +268,19 @@ class Mesibo_AppUtils {
     }
 
     if (MsgIdPos == -1) {
-      console.log("Error:utils:updateReadPrevious:MsgId not found in array of sent Messages");
+      MesiboLog("Error:utils:updateReadPrevious:MsgId not found in array of sent Messages");
       return -1;
     }
 
     //Update read receipt for all previously delievered messages
     //TBD: Maybe have a lastMsgRead pos in ls,to make iterate faster and stop it there
 
-    // console.log(pMsgArray);
+    // MesiboLog(pMsgArray);
 
     for (var i = MsgIdPos - 1; i >= 0; i--) {
       if (pMsgArray[i]['status'] == MESIBO_MSGSTATUS_DELIVERED | MESIBO_MSGSTATUS_READ) {
         pMsgArray[i]['data'];
-        Mesibo_AppUtils.updateStatusTick(document.getElementById(pMsgArray[i]['id']), MESIBO_MSGSTATUS_READ);
+        MesiboUIUtils.updateStatusTick(document.getElementById(pMsgArray[i]['id']), MESIBO_MSGSTATUS_READ);
       }
     }
 
@@ -319,7 +300,7 @@ class Mesibo_AppUtils {
     var lastMsgId = String(selected_user_name) + "_LastMsg";
     var lastMsgDateId = String(selected_user_name) + "_LastDate";
     var lastMsgStatusId = String(selected_user_name) + "_LastStatus";
-    console.log(lastMsgStatusId);
+    MesiboLog(lastMsgStatusId);
 
     var lastMsgArea = document.getElementById(lastMsgId);
     $(lastMsgId).text('');
@@ -340,10 +321,10 @@ class Mesibo_AppUtils {
         lastMsgArea.innerHTML = lastMsgContent['data'];
 
 
-      if (Mesibo_AppUtils.dateNow(lastMsgContent['ts']) == Mesibo_AppUtils.dateYesterday(+new Date()))
+      if (MesiboUIUtils.dateNow(lastMsgContent['ts']) == MesiboUIUtils.dateYesterday(+new Date()))
         lastMsgDateArea.innerHTML = 'Yesterday';
-      else if (Mesibo_AppUtils.dateNow(lastMsgContent['ts']) == Mesibo_AppUtils.dateNow(+new Date()))
-        lastMsgDateArea.innerHTML = Mesibo_AppUtils.timeFromTs(lastMsgContent['ts']);
+      else if (MesiboUIUtils.dateNow(lastMsgContent['ts']) == MesiboUIUtils.dateNow(+new Date()))
+        lastMsgDateArea.innerHTML = MesiboUIUtils.timeFromTs(lastMsgContent['ts']);
       else {
         var dateValue = new Date(lastMsgContent['ts']);
         lastMsgDateArea.innerHTML = dateValue.getDate() + "/" + (dateValue.getMonth() + 1) + "/" + dateValue.getFullYear()
@@ -354,7 +335,7 @@ class Mesibo_AppUtils {
         lastMsgStatusArea.style.display = "none";
       } else {
         lastMsgStatusArea.style.display = "inline";
-        Mesibo_AppUtils.updateStatusTick(lastMsgStatusArea, lastMsgContent['status']);
+        MesiboUIUtils.updateStatusTick(lastMsgStatusArea, lastMsgContent['status']);
       }
     }
 
@@ -365,7 +346,7 @@ class Mesibo_AppUtils {
 
     retrievedMsgArray = JSON.parse(retrievedMsgArray);
     if (retrievedMsgArray) {
-      // console.log(retrievedMsgArray);
+      // MesiboLog(retrievedMsgArray);
       var lastMsgContent = retrievedMsgArray[retrievedMsgArray.length - 1];
       return lastMsgContent['ts'];
     } else
@@ -375,25 +356,25 @@ class Mesibo_AppUtils {
   static updateUserListOrder(phone_book) {
     var $divs = $("#UserList .row.sideBar-body");
     var TimeOrderedDivs = $divs.sort(function(a, b) {
-      return Mesibo_AppUtils.getLastTs(phone_book[b.id]['phone']) - Mesibo_AppUtils.getLastTs((phone_book[a.id]['phone']));
+      return MesiboUIUtils.getLastTs(phone_book[b.id]['phone']) - MesiboUIUtils.getLastTs((phone_book[a.id]['phone']));
     });
     $("#UserList").html(TimeOrderedDivs);
   }
 
 
   static createContactsListDisplay(contactsArray) {
-    console.log("===>utils:createContactsListDisplay called ");
-    // console.log(contactsArray);
+    MesiboLog("===>utils:createContactsListDisplay called ");
+    MesiboLog(contactsArray);
     if (contactsArray) {
       for (var i = 0; i < contactsArray.length; i++)
-        Mesibo_AppUtils.createProfileBlock(contactsArray[i]);
+        MesiboUIUtils.createProfileBlock(contactsArray[i]);
     }
 
   }
 
   //If sync is required
   static getSyncPhoneBook(contactsArray) {
-    console.log("===>Mesibo_AppUtils.getSyncPhoneBook called");
+    MesiboLog("===>utils:getSyncPhoneBook called");
     //If you need to synchronise contact names provide a json object in the following format
 
     var SyncPhoneBook = {
@@ -409,7 +390,7 @@ class Mesibo_AppUtils {
       },
     };
 
-    console.log(contactsArray);
+    MesiboLog(contactsArray);
     var NewPhoneBook = {};
 
 
@@ -436,11 +417,11 @@ class Mesibo_AppUtils {
   }
 
   static createProfileBlock(profileDetails) {
-    // console.log("===> utils:createProfileBlock called ");
+    MesiboLog("===> utils:createProfileBlock called ");
     var rowBodyDiv = document.createElement('div');
     rowBodyDiv.className = "row sideBar-body";
     rowBodyDiv.onclick = function() {
-      loadChatHistory(profileDetails['name']);
+      MesiboDemoApp.loadChatHistory(profileDetails['name']);
     };
 
     var profilePicDiv = document.createElement('div');
@@ -492,12 +473,12 @@ class Mesibo_AppUtils {
   }
 
   static createActivePeerBlock(userName, PhoneBook) {
-    console.log("===>utils:createActivePeerBlock called for", userName);
+    MesiboLog("===>utils:createActivePeerBlock called for " + userName);
 
     var rowBodyDiv = document.createElement('div');
     rowBodyDiv.className = "row sideBar-body";
     rowBodyDiv.onclick = function() {
-      loadChatHistory(userName);
+      MesiboDemoApp.loadChatHistory(userName);
     };
 
     rowBodyDiv.setAttribute("id", userName);
@@ -567,17 +548,52 @@ class Mesibo_AppUtils {
 
 
   static displayActiveUsers(activeUserList, PhoneBook) {
-    console.log("===>utils:displayActiveUsers called");
+    MesiboLog("===>utils:displayActiveUsers called");
 
     for (var i = 0; i < activeUserList.length; i++) {
-      var user_name = Mesibo_AppUtils.getUserFromPhone(activeUserList[i], PhoneBook)
-      Mesibo_AppUtils.createActivePeerBlock(user_name, PhoneBook);
-      Mesibo_AppUtils.updateProfilePic(user_name + "_ProfilePicture", "https://appimages.mesibo.com/" + PhoneBook[user_name]['photo']);
-      Mesibo_AppUtils.updateLastMsg(user_name, activeUserList[i]);
+      var user_name = MesiboUIUtils.getUserFromPhone(activeUserList[i], PhoneBook)
+      MesiboUIUtils.createActivePeerBlock(user_name, PhoneBook);
+      MesiboUIUtils.updateProfilePic(user_name + "_ProfilePicture", "https://appimages.mesibo.com/" + PhoneBook[user_name]['photo']);
+      MesiboUIUtils.updateLastMsg(user_name, activeUserList[i]);
     }
   }
 
+  static getElementById(eid) {
+    return document.getElementById(eid);
+  }
+
+  static decodeString(s) {
+    return new TextDecoder("utf-8").decode(s);
+  }
+
+  static setAttribute(eId, propName, propValue) {
+    const b = document.getElementById(eId);
+
+    if (b)
+      b.setAttribute(propName, propValue);
+    else
+      MesiboLog('utils: setAttribute failed for element ' + eId + ' ,property: ' + propName +
+        ' ,value ' + propValue);
+  }
+
+  static addEventListener(eId, event, eventListener) {
+    const b = document.getElementById(eId);
+    if (b)
+      b.addEventListener(event, eventListener);
+    else
+      MesiboLog('utils: addEventListener failed for element ' + eId + ' ,event: ' + event +
+        ' ,listener ' + eventListener);
+  }
+
+  static setInnerHtml(eId,HtmlVal){
+    const b = document.getElementById(eId);
+    if(b)
+      b.innerHTML = HtmlVal;
+    else
+      MesiboLog('utils: setInnerHtml failed for element ' + eid , 'HTMLval' + Htmlval);
+  }
 }
+
 
 
 // Fetch Contacts
@@ -586,7 +602,7 @@ async function fetchContacts(usrToken) {
   const response =
     await fetch('https://app.mesibo.com/api.php?op=getcontacts&token=' + usrToken);
 
-  console.log(response);
+  MesiboLog(response);
 
   const contactsData = await response.json(); //extract JSON from the http response
 
@@ -594,24 +610,24 @@ async function fetchContacts(usrToken) {
     return contact.gid == 0;
   });
 
-  var PhoneBook = Mesibo_AppUtils.getPhoneBookFromContacts(personsOnly);
+  var PhoneBook = MesiboUIUtils.getPhoneBookFromContacts(personsOnly);
   localStorage.setItem("Mesibo_LocalPhoneBook", JSON.stringify(PhoneBook));
 
-  InitDisplay();
+  MesiboDemoApp.initDisplay();
 
   // Syncing with Local Contacts
-  Mesibo_AppUtils.createContactsListDisplay(Object.values(PhoneBook));
+  MesiboUIUtils.createContactsListDisplay(Object.values(PhoneBook));
 }
 
-async function uploadAndSendFile(msg_payload, usrToken,AppStorage) {
-  console.log("===> uploadAndSendFile called");
+async function uploadAndSendFile(msg_payload, usrToken, AppStorage) {
+  MesiboLog("===> uploadAndSendFile called");
   $('#imagePreviewHolder').hide();
 
   const fileInput = document.querySelector('#imgupload');
   const formData = new FormData();
 
-  console.log(fileInput);
-  console.log(fileInput.files[0]);
+  MesiboLog(fileInput);
+  MesiboLog(fileInput.files[0]);
 
 
   formData.append('file', fileInput.files[0]);
@@ -620,135 +636,126 @@ async function uploadAndSendFile(msg_payload, usrToken,AppStorage) {
     method: 'POST',
     body: formData,
 
-    // If you add this, upload won't work
-    // headers: {
-    //   'Content-Type': 'multipart/form-data',
-    // }
-
   };
 
   const response = await fetch('https://s3.mesibo.com/api.php?op=upload&token=' + usrToken, options);
-  console.log(response);
+  MesiboLog(response);
   const image_url = await response.json();
-  console.log(image_url['file']);
+  MesiboLog(image_url['file']);
 
   msg_payload['fileurl'] = image_url['file'];
-  AppStorage.updateFileUrl(msg_payload['id'],msg_payload['peer'],image_url['file']);
-  Mesibo_AppUtils.createImageSentBubble(msg_payload);
-  resize(fileInput.files[0],200,200,'base64',msg_payload,image_url['file']);
+  AppStorage.updateFileUrl(msg_payload['id'], msg_payload['peer'], image_url['file']);
+  MesiboUIUtils.createImageSentBubble(msg_payload);
+  resize(fileInput.files[0], 200, 200, 'base64', msg_payload, image_url['file']);
 
 }
 
-function sendWithThumbnail(imgFile,msg_payload,imgUrl) {
+function sendWithThumbnail(imgFile, msg_payload, imgUrl) {
   var reader = new FileReader();
   reader.onloadend = function() {
-    console.log('RESULT', reader.result);
+    MesiboLog('RESULT', reader.result);
     var tn_array = new Uint8Array(reader.result); //reader.result from base64
-    sendFiletoPeer(msg_payload['peer'], msg_payload['id'], imgUrl,tn_array,msg_payload['data']);
+    sendFiletoPeer(msg_payload['peer'], msg_payload['id'], imgUrl, tn_array, msg_payload['data']);
   }
   reader.readAsArrayBuffer(imgFile);
 }
 
 
 
-
-
-
 Array.prototype.contains = function(v) {
-  for (var i = 0; i < Mesibo_AppUtils.length; i++) {
-    if (Mesibo_AppUtils[i] === v) return true;
+  for (var i = 0; i < MesiboUIUtils.length; i++) {
+    if (MesiboUIUtils[i] === v) return true;
   }
   return false;
 };
 
 Array.prototype.unique = function() {
   var arr = [];
-  for (var i = 0; i < Mesibo_AppUtils.length; i++) {
-    if (!arr.contains(Mesibo_AppUtils[i])) {
-      arr.push(Mesibo_AppUtils[i]);
+  for (var i = 0; i < MesiboUIUtils.length; i++) {
+    if (!arr.contains(MesiboUIUtils[i])) {
+      arr.push(MesiboUIUtils[i]);
     }
   }
   return arr;
 }
 
-function resize(file, max_width, max_height, imageEncoding , msg_payload, imgUrl){
-    var fileLoader = new FileReader(),
-    canvas = document.createElement('canvas'),
-    context = null,
-    imageObj = new Image(),
-    blob = null;            
+function resize(file, max_width, max_height, imageEncoding, msg_payload, imgUrl) {
+  var fileLoader = new FileReader(),
+  canvas = document.createElement('canvas'),
+  context = null,
+  imageObj = new Image(),
+  blob = null;
 
-    //create a hidden canvas object we can use to create the new resized image data
-    canvas.id     = "hiddenCanvas";
-    canvas.width  = max_width;
-    canvas.height = max_height;
-    canvas.style.visibility   = "hidden";   
-    document.body.appendChild(canvas);  
+  //create a hidden canvas object we can use to create the new resized image data
+  canvas.id = "hiddenCanvas";
+  canvas.width = max_width;
+  canvas.height = max_height;
+  canvas.style.visibility = "hidden";
+  document.body.appendChild(canvas);
 
-    //get the context to use 
-    context = canvas.getContext('2d');  
+  //get the context to use 
+  context = canvas.getContext('2d');
 
-    // check for an image then
-    //trigger the file loader to get the data from the image         
-    if (file.type.match('image.*')) {
-        fileLoader.readAsDataURL(file);
+  // check for an image then
+  //trigger the file loader to get the data from the image         
+  if (file.type.match('image.*')) {
+    fileLoader.readAsDataURL(file);
+  } else {
+    alert('File is not an image');
+  }
+
+  // setup the file loader onload function
+  // once the file loader has the data it passes it to the 
+  // image object which, once the image has loaded, 
+  // triggers the images onload function
+  fileLoader.onload = function() {
+    var data = this.result;
+    imageObj.src = data;
+  };
+
+  fileLoader.onabort = function() {
+    alert("The upload was aborted.");
+  };
+
+  fileLoader.onerror = function() {
+    alert("An error occured while reading the file.");
+  };
+
+
+  // set up the images onload function which clears the hidden canvas context, 
+  // draws the new image then gets the blob data from it
+  imageObj.onload = function() {
+
+    // Check for empty images
+    if (this.width == 0 || this.height == 0) {
+      alert('Image is empty');
     } else {
-        alert('File is not an image');
+
+      context.clearRect(0, 0, max_width, max_height);
+      context.drawImage(imageObj, 0, 0, this.width, this.height, 0, 0, max_width, max_height);
+
+
+      blob = dataURItoBlob(canvas.toDataURL(imageEncoding));
+
+      //pass this blob to upload function
+      sendWithThumbnail(blob, msg_payload, imgUrl)
+
     }
+  };
 
-    // setup the file loader onload function
-    // once the file loader has the data it passes it to the 
-    // image object which, once the image has loaded, 
-    // triggers the images onload function
-    fileLoader.onload = function() {
-        var data = this.result; 
-        imageObj.src = data;
-    };
+  imageObj.onabort = function() {
+    alert("Image load was aborted.");
+  };
 
-    fileLoader.onabort = function() {
-        alert("The upload was aborted.");
-    };
-
-    fileLoader.onerror = function() {
-        alert("An error occured while reading the file.");
-    };  
-
-
-    // set up the images onload function which clears the hidden canvas context, 
-    // draws the new image then gets the blob data from it
-    imageObj.onload = function() {  
-
-        // Check for empty images
-        if(this.width == 0 || this.height == 0){
-            alert('Image is empty');
-        } else {                
-
-            context.clearRect(0,0,max_width,max_height);
-            context.drawImage(imageObj, 0, 0, this.width, this.height, 0, 0, max_width, max_height);
-
-
-            blob = dataURItoBlob(canvas.toDataURL(imageEncoding));
-
-            //pass this blob to your upload function
-            // upload(blob);
-            sendWithThumbnail(blob,msg_payload,imgUrl)
-            
-        }       
-    };
-
-    imageObj.onabort = function() {
-        alert("Image load was aborted.");
-    };
-
-    imageObj.onerror = function() {
-        alert("An error occured while loading image.");
-    };
+  imageObj.onerror = function() {
+    alert("An error occured while loading image.");
+  };
 
 }
 
 function dataURItoBlob(dataURI) {
   // convert base64 to raw binary data held in a string
-  // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+  // doesn't handle URLEncoded DataURIs 
   var byteString = atob(dataURI.split(',')[1]);
 
   // separate out the mime component
@@ -762,11 +769,123 @@ function dataURItoBlob(dataURI) {
 
   // set the bytes of the buffer to the correct values
   for (var i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
+    ia[i] = byteString.charCodeAt(i);
   }
 
   // write the ArrayBuffer to a blob, and you're done
-  var blob = new Blob([ab], {type: mimeString});
+  var blob = new Blob([ab], {
+    type: mimeString
+  });
   return blob;
 
 }
+
+function hideSidePanel() {
+  MesiboUIUtils.setElementAttrribute('.side-two', 'style', "'left':'0'");
+}
+
+function showSidePanel() {
+  MesiboUIUtils.setElementAttrribute('.side-two', 'style', "'left':'-100%'");
+}
+
+function _bindEventsToElements() {
+  // MesiboUIUtils.addEventListener('heading-compose', 'click', `hideSidePanel`);
+  // MesiboUIUtils.addEventListener('newMessage-back', 'click', `showSidePanel`);
+  // MesiboUIUtils.addEventListener('OpenImgUpload', 'change', `showImagePreview`);
+  // MesiboUIUtils.addEventListener('imageUpload','change',showImagePreview);
+}
+
+function onClickSendData() {
+  const fileInput = document.querySelector('#imgupload');
+  if (fileInput.files[0])
+    MesiboDemoApp.sendFile();
+  else
+    MesiboDemoApp.sendMessage();
+}
+
+
+//Enter to send Message
+document.onkeydown = function(e) {
+  e = e || window.event;
+  switch (e.which || e.keyCode) {
+    case 13: //(13 is ascii code for 'ENTER')
+      MesiboDemoApp.sendMessage();
+      if (event.preventDefault) event.preventDefault(); 
+      break;
+  }
+
+}
+
+// Side Panel Display
+$(function() {
+  $(".heading-compose").click(function() {
+    $(".side-two").css({
+      "left": "0"
+    });
+  });
+
+  $(".newMessage-back").click(function() {
+    $(".side-two").css({
+      "left": "-100%"
+    });
+  });
+})
+
+function openFilePreview() {
+  $('#imgupload').trigger('click');
+  console.log("uploading image");
+}
+
+function readURL(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    
+    reader.onload = function(e) {
+      $('#imagePreview').attr('src', e.target.result);
+    }
+    
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+$('#imgupload').change(function (){
+ 
+  readURL(this);
+  $('#imagePreviewHolder').show();
+});
+
+$('#closePreviewButton').click(function() {
+  console.log("Close Preview ");
+  $('#imagePreview').attr('src', "");
+  $('#imagePreviewHolder').hide();
+  return false;
+});
+
+
+
+
+function showVideoHolder(){
+  const v = document.getElementById('videoHolder');
+  v.style.display = 'block';
+  MesiboDemoApp.getMesiboInstance().setupVideoCall("localVideo", "remoteVideo", true);
+  MesiboDemoApp.getMesiboInstance().call(MesiboDemoApp.getSelectedUser());
+}
+
+function closeVideoHolder(){
+  MesiboLog("Close Video");
+  const v = document.getElementById('videoHolder');
+  v.style.display = 'none';
+  MesiboDemoApp.getMesiboInstance().hangup(0);
+  return false ;
+}
+
+function answer() {
+  $('#answerModal').modal("hide");
+  MesiboDemoApp.getMesiboInstance().answer(true);
+}
+
+function hangup() {
+  $('#answerModal').modal("hide");
+  MesiboDemoApp.getMesiboInstance().hangup(0);
+}
+
