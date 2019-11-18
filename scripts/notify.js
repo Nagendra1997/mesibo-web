@@ -31,7 +31,7 @@ MesiboNotify.prototype.Mesibo_OnMessage = function(m, data) {
 	if (data) {
 		//Send receipt, If selected user is in current view 
 		this.AppContext.checkAndSendReadReceipt(m);
-		this.AppContext.checkAndCreateDateHeader(m);
+		this.AppContext.checkAndCreateDateHeader(m, + new Date);
 		this.AppContext.createRecievedBubble(m, data);
 
 		this.AppContext.getAppStorage().updateItemRecieved(m, data);

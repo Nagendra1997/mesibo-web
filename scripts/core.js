@@ -149,6 +149,9 @@ MesiboAppCore.prototype.checkAndCreateDateHeader = function(m, messageTs) {
 	const dateAtLastMessage = MesiboUIUtils.dateNow(
 		MesiboUIUtils.getLastTs(m.peer, this.phoneBook));
 
+	MesiboLog(dateAtTs);
+	MesiboLog( dateAtPreviousDay);
+
 	if ((dateAtTs != dateAtLastMessage)) {
 		if (dateAtTs == dateAtCurrentDay) {
 			MesiboUIUtils.createDateHeaderBlock("Today");
@@ -227,7 +230,7 @@ MesiboAppCore.prototype.sendFile = function() {
 		'filetype': 1, // 1 for image
 	};
 
-	this.checkAndCreateDateHeader(msg_payload);
+	this.checkAndCreateDateHeader(msg_payload, msg_payload['ts']);
 
 	this.AppStorage.newItemSent(id, p.peer, msg_payload);
 	this.AppStorage.msgPeerHash(id, p.peer);
@@ -265,7 +268,7 @@ MesiboAppCore.prototype.sendMessage = function() {
 			'status': MESIBO_MSGSTATUS_OUTBOX
 		};
 
-		this.checkAndCreateDateHeader(msg_payload);
+		this.checkAndCreateDateHeader(msg_payload, msg_payload['ts']);
 
 		this.appStorage.newItemSent(id, p.peer, msg_payload);
 		this.appStorage.msgPeerHash(id, p.peer);
